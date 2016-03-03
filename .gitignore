@@ -17,4 +17,4 @@ vignettes/*.pdf
 *.RData
 *.Rhistory
 geneexpr/src/
-temp/
+geneexpr/temp/
