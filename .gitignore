@@ -18,3 +18,4 @@ vignettes/*.pdf
 *.Rhistory
 *.o # C output
 *.so # C dynamic output
+temp/
