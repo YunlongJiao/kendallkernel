@@ -1,0 +1,174 @@
+---
+title: "kendallkernel - classify gene expression data"
+author: "Yunlong Jiao"
+date: "26 February 2016"
+output: html_document
+---
+
+```{r setup, eval = TRUE, message = FALSE}
+knitr::opts_chunk$set(error = FALSE, warning = FALSE, fig.width = 8, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "figure/", cache.path = "cache/")
+set.seed(35875954)
+
+# utiles
+library(kernlab) # for kernel svm
+library(pcaPP) # for fast kendall tau
+library(caret) # for data split
+library(parallel) # for parallel cross-validation
+source("func.R")
+dyn.load("src/tsp.so") # for tsp-related C codes
+dyn.load("src/utiles.so") # for other C codes
+```
+
+## Datasets
+
+All datasets are taken from publicly available sources. Briefly, for datasets with two independent parts (marked `indepval`), predictions are reported on the test set whilst 5-fold cv training is done on training set; for datasets with only one part (marked `crossval`), predictions are reported by 10 times of 5-fold cv whilst (nested) 5-fold cv is done on each training fold for parameter tuning. See [the paper](https://hal.archives-ouvertes.fr/hal-01279273) for detailed summary of the datasets.
+
+```{r data, cache = TRUE}
+# datasets
+indepvallist <- c('bc', 'lcbwh', 'pc') # two sets are available
+crossvallist <- c('ct', 'ocpbsii', 'cns', 'pcout', 'transbig', 'lung_annarbor_outcome', 'Wang_Breastcancer') # only one set is available so that double-nested cv is necessary
+prefixlist <- c(indepvallist, crossvallist)
+
+# read in 10 datasets from folder data/
+fnames <- list.files(path = "data/")
+for (fname in fnames) load(paste0("data/", fname))
+
+# dataset alias as they appear in the paper
+cbind(dataset = (namebefore <- c("bc", "transbig", "Wang_Breastcancer", "ct", "lung_annarbor_outcome", 
+                                 "lcbwh", "cns", "ocpbsii", "pc", "pcout")), 
+      alias = (nameafter <- c("BC1", "BC2", "BC3", "CT", "LA1", "LC2", "MB", "OC", "PC1", "PC2")))
+```
+
+## Model performance comparison
+
+Models come from 3 categories (presented in different ways for ease of coding implementation or for ease of scoring and plotting):
+
+1. A baseline model with no tuning parameter that is all-pairs-majority-votes (or n(n-1)/2-TSP)
+2. Models involving only tuning C that are SVM with linear, Gaussian RBF, (2nd-order homogeneous) polynomial and Kendall kernel where KFD are penetrated in SVM codes as simple reference kernel machines
+3. Models involving tuning C and k that are SVM with top-k pairs of features with aforementioned kernels
+
+```{r param, cache = TRUE}
+# set list of C parameters for SVM-based models
+Cpara_list <- c(0.01, 0.1, 1, 10, 100, 1000)
+names(Cpara_list) <- paste('C',1:length(Cpara_list),sep='')
+
+# set list of #genepairs for corresponding models
+max_nodes = 5000; npairs_out = 30;
+npairs_list <- floor(exp(seq(0,1,length.out=npairs_out)*log(max_nodes)))
+evenidx <- npairs_list %% 2 == 0
+npairs_list[evenidx] <- npairs_list[evenidx] - 1 # keep odd numbers only
+npairs_list <- unique(npairs_list)
+names(npairs_list) <- paste('k',1:length(npairs_list),sep='')
+
+# categorize models for ease of training
+modelsNOpara <- c("APMV")
+modelsConly <- c("SVMlinearALL", "SVMkdtALL", "SVMpolynomialALL", "SVMrbf") # plus KFD coded within each
+modelsTSPrelated <- c("TSP", "kTSP", "SVMlinearTOP", "SVMkdtTOP", "SVMpolynomialTOP")
+# OR reorganise for ease of plotting
+models0 <- c("TSP", "APMV")
+modelsConly <- c("SVMlinearALL", "SVMkdtALL", "SVMpolynomialALL", "SVMrbf") # same as before!
+modelsKonly <- c("kTSP")
+modelsCandK <- c("SVMlinearTOP", "SVMkdtTOP", "SVMpolynomialTOP")
+modelslist <- c(models0, modelsConly, modelsKonly, modelsCandK)
+# OR reorganise for feature selection plot varying K
+modelsVary <- c("SVMlinearTOP", "SVMkdtTOP", "SVMpolynomialTOP", "kTSP")
+modelsStatic <- c("SVMlinearALL", "SVMkdtALL", "SVMpolynomialALL", "TSP", "APMV")
+```
+
+```{r indepval, cache = TRUE, message = FALSE}
+# indepval datasets
+res_indepval <- mclapply(indepvallist, function(prefixname){
+  xtr <- get(prefixname)$xtrain; ytr <- get(prefixname)$ytrain
+  xtst <- get(prefixname)$xtest; ytst <- get(prefixname)$ytest
+  if(is.null(xtst) || is.null(ytst)) stop(paste('dataset error',prefixname,sep=':'))
+  
+  res <- perfClassification(NULL, prefixname, xtr, ytr, xtst, ytst,
+                            Cpara_list, npairs_list, modelsConly, modelsTSPrelated, modelsNOpara,
+                            nfolds = 5, nrepeats = 1, seed = 206)
+  return(res)
+}, mc.cores = 8)
+names(res_indepval) <- indepvallist
+```
+
+```{r crossval, cache = TRUE, message = FALSE}
+# crossval datasets
+res_crossval <- mclapply(crossvallist, function(prefixname){
+  xtr <- get(prefixname)$xtrain; ytr <- get(prefixname)$ytrain
+  xtst <- get(prefixname)$xtest; ytst <- get(prefixname)$ytest
+  if(!is.null(xtst) || !is.null(ytst)) stop(paste('dataset error',prefixname,sep=':'))
+  
+  set.seed(1226)
+  outterFoldIndices <- createMultiFolds(1:nrow(xtr), k=5, times=10)
+  sig <- sigest(xtr,scaled=F)['50%']
+  
+  res <- lapply(outterFoldIndices, function(outterFold){
+    return(perfClassification(NULL, prefixname, xtr[outterFold,,drop=F], ytr[outterFold], xtr[-outterFold,,drop=F], ytr[-outterFold], 
+                              Cpara_list, npairs_list, modelsConly, modelsTSPrelated, modelsNOpara, 
+                              nfolds = 5, nrepeats = 1, seed = 206, sigma=sig))
+  })
+  return(res)
+}, mc.cores = 8)
+names(res_crossval) <- crossvallist
+```
+
+We report classification accuracy across different datasets and different models.
+
+```{r perf_table}
+modelsKFD <- sub("SVM", "KFD", modelsConly)
+table_acc <- matrix(-100, 
+                    nrow = length(prefixlist), ncol = length(c(modelslist,modelsKFD)),
+                    dimnames = list(prefixlist, c(modelslist,modelsKFD)))
+
+for (prefixname in prefixlist) {
+  for (modelname in modelslist) {
+    if (prefixname %in% indepvallist) {
+      res <- res_indepval[[prefixname]]
+      idx <- which.max(res[[modelname]]$cvacc)
+      s <- res[[modelname]]$acc[idx]
+      table_acc[prefixname,modelname] <- round(100*s,2)
+      if (modelname %in% modelsConly) { # add KFD penetrated within
+        s_kfd <- res[[modelname]]$acc_kfd
+        table_acc[prefixname,sub("SVM", "KFD", modelname)] <- round(100*s_kfd,2)
+      }
+    } else if (prefixname %in% crossvallist) {
+      s <- mean(sapply(res_crossval[[prefixname]], function(res){
+        idx <- which.max(res[[modelname]]$cvacc)
+        return(res[[modelname]]$acc[idx])
+      }))
+      table_acc[prefixname,modelname] <- round(100*s,2)
+      if (modelname %in% modelsConly) { # add KFD penetrated within
+        s_kfd <- mean(sapply(res_crossval[[prefixname]], function(res){
+          return(res[[modelname]]$acc_kfd)
+        }))
+        table_acc[prefixname,sub("SVM", "KFD", modelname)] <- round(100*s_kfd,2)
+      }
+    } else {
+      stop("Please add ", prefixname, " in either indepvallist or crossvallist")
+    }
+  }
+}
+rownames(table_acc) <- nameafter[match(rownames(table_acc), namebefore)] # re-name 
+table_acc <- rbind(AVERAGE = round(colMeans(table_acc), 2), table_acc) # add AVERAGE scores over all datasets
+table_acc <- table_acc[order(rownames(table_acc)),order(table_acc["AVERAGE",],decreasing = TRUE)] # re-order
+# show score table
+t(table_acc)
+# show boxplot
+par(mar = c(10, 5, 1, 1) + 0.1, font.lab = 2, font.axis = 2, font.main = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
+boxplot(table_acc[-1,]/100, las = 2, ylab = 'acc', col='royalblue2')
+
+
+
+
+
+
+
+
+# save up for now...
+save.image("res.RData")
+```
+
+## session info
+
+```{r session_info}
+devtools::session_info()
+```

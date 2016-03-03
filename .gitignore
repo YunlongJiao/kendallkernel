@@ -15,3 +15,6 @@ vignettes/*.pdf
 # additional
 *.DS_Store
 *.RData
+*.Rhistory
+*.o # C output
+*.so # C dynamic output
