@@ -16,6 +16,5 @@ vignettes/*.pdf
 *.DS_Store
 *.RData
 *.Rhistory
-*.o # C output
-*.so # C dynamic output
+geneexpr/src/
 temp/
