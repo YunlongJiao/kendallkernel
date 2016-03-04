@@ -44,7 +44,7 @@ cbind(dataset = (namebefore <- c("bc", "transbig", "Wang_Breastcancer", "ct", "l
 Models come from 3 categories (presented in different ways for ease of coding implementation or for ease of scoring and plotting):
 
 1. A baseline model with no tuning parameter that is all-pairs-majority-votes (or n(n-1)/2-TSP)
-2. Models involving only tuning C that are SVM with linear, Gaussian RBF, (2nd-order homogeneous) polynomial and Kendall kernel where KFD are penetrated in SVM codes as simple reference kernel machines
+2. Models involving only tuning C that are SVM with linear, Gaussian RBF, (2nd-order homogeneous) polynomial and Kendall kernel where KFD (Kernel Fisher Discriminant) are penetrated in SVM codes as simple reference kernel machines
 3. Models involving tuning C and k that are SVM with top-k pairs of features with aforementioned kernels
 
 ```{r param, cache = TRUE}
@@ -155,16 +155,143 @@ t(table_acc)
 # show boxplot
 par(mar = c(10, 5, 1, 1) + 0.1, font.lab = 2, font.axis = 2, font.main = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
 boxplot(table_acc[-1,]/100, las = 2, ylab = 'acc', col='royalblue2')
+```
 
+Among SVM-based models we compare the tuning sensitivity to C parameter that could impact on the performance in terms of classification accuracy, where KFD are set as reference baseline models.
 
+```{r perf_C}
+nConly <- length(modelsConly) # number of SVM models (KFD implemented within each)
+for (prefixname in prefixlist) {
+  mainname <- nameafter[which(prefixname == namebefore)]
+  key <- (prefixname %in% indepvallist)
+  
+  if (key) {
+    res <- res_indepval[[prefixname]]
+    s <- sapply(res[modelsConly],function(u){c(u$acc_kfd,u$acc)}) # *** single value of acc_kfd followed by a vector of acc is necessary for implementation below
+  } else {
+    res <- res_crossval[[prefixname]]
+    s <- lapply(res, function(resfold){
+      sapply(resfold[modelsConly],function(u){c(u$acc_kfd,u$acc)})
+    })
+    dm <- c(dim(s[[1]]),length(s)); dn <- dimnames(s[[1]]) # save info of dim and dimnames
+    s <- unlist(s); dim(s) <- dm # reform to an 3d array
+    s <- apply(s, c(1,2), mean); dimnames(s) <- dn # average over cv-folds
+  }
+  
+  # set y range for plot
+  plotrange <- c(floor(10*min(s,na.rm=T))/10,ceiling(10*max(s,na.rm=T))/10)
+  
+  # plotting
+  par(font.lab = 2, font.axis = 2, font.main = 2, font = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
+  plot(Cpara_list, rep(-100,length(Cpara_list)), main=mainname, 
+       xlab="C parameter", ylab=ifelse(key,"acc","cvacc"), 
+       ylim=plotrange,type='l',lwd=2,lty=1,col=1,log='x')
+  for (col in seq(nConly)) {
+    modelname <- modelsConly[col]
+    lines(Cpara_list,s[-1,modelname],type='l',lwd=2,lty=1,col=col) # *** see notes above
+    points(Cpara_list,rep(s[1,modelname],length(Cpara_list)),type='l',lty=5,lwd=1,col=col,cex=1)
+    if (key) { # for indepval mark cv-tuned parameter
+      idx <- which.max(res[[modelname]]$cvacc)
+      score <- res[[modelname]]$acc
+      points(Cpara_list[idx],score[idx],lwd=2,lty=1,pch=col,col=col,cex=2)
+    }
+  }
+  molist <- c(modelsConly,sub("SVM","KFD",modelsConly))
+  molist[grep('rbf',molist)] <- paste(molist[grep('rbf',molist)],'ALL',sep='')
+  legend("bottomright",legend=molist,
+         col= c(seq(nConly),seq(nConly)),lty=c(rep(1,nConly),rep(5,nConly)),
+         lwd=c(rep(2,nConly),rep(1,nConly)),cex=1.25)
+  grid(ny=16)
+}
+```
 
+Now we study the impact of feature selection onto classification accuracy. TSP-based models serve as reference models.
 
-
-
-
-
-# save up for now...
-save.image("res.RData")
+```{r perf_fs}
+nVary <- length(modelsVary) # number of vary-K models
+nStatic <- length(modelsStatic) # number of K-independent models
+for (prefixname in prefixlist) {
+  mainname <- nameafter[which(prefixname == namebefore)]
+  key <- (prefixname %in% indepvallist)
+  
+  if (key) {
+    res <- res_indepval[[prefixname]]
+    # acc for K-independent models
+    res_static <- lapply(modelsStatic, function(modelname){
+      idx <- which.max(res[[modelname]]$cvacc)
+      res[[modelname]]$acc[idx]
+    })
+    # acc for vary-K models
+    res_vary <- lapply(modelsVary, function(modelname){
+      cvscore <- res[[modelname]]$cvacc
+      ivscore <- res[[modelname]]$acc
+      if (!modelname %in% modelsCandK) {
+        cvscore <- matrix(cvscore, nrow = 1)
+        ivscore <- matrix(ivscore, nrow = 1)
+      }
+      tl <- max.col(t(cvscore), ties.method = 'first')
+      idx <- which(cvscore == max(cvscore), arr.ind = TRUE)[1,"col"] # return INDEX of smallest k
+      ivscore <- sapply(1:length(tl), function(u){ivscore[tl[u],u]}) # cv-ed out regarding C
+      return(list(s = ivscore, k = idx))
+    })
+  } else {
+    res <- res_crossval[[prefixname]]
+    # acc for K-independent models
+    res_static <- lapply(modelsStatic, function(modelname){
+      mean(sapply(res, function(resfold){
+        resfold[[modelname]]$acc[which.max(resfold[[modelname]]$cvacc)]
+      }))
+    })
+    # acc for vary-K models
+    res_vary <- lapply(modelsVary, function(modelname){
+      return(list(s = rowMeans(sapply(res, function(resfold){
+        cvscore <- resfold[[modelname]]$cvacc
+        ivscore <- resfold[[modelname]]$acc
+        if (!modelname %in% modelsCandK) {
+          cvscore <- matrix(cvscore, nrow = 1)
+          ivscore <- matrix(ivscore, nrow = 1)
+        }
+        tl <- max.col(t(cvscore), ties.method = 'first')
+        ivscore <- sapply(1:length(tl), function(u){ivscore[tl[u],u]}) # cv-ed out regarding C
+        return(ivscore)
+      })), k = NA))
+    })
+  }
+  names(res_static) <- modelsStatic
+  names(res_vary) <- modelsVary
+  
+  # set y range for plot
+  s <- c(unlist(res_static), unlist(lapply(res_vary,function(u){u$s})))
+  plotrange <- c(floor(10*min(s,na.rm=T))/10,ceiling(10*max(s,na.rm=T))/10)
+  
+  # plotting
+  par(font.lab = 2, font.axis = 2, font.main = 2, font = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
+  plot(npairs_list, rep(-100,length(npairs_list)), main=mainname,
+       xlab="Number k of top gene pairs", ylab=ifelse(key,"acc","cvacc"), 
+       ylim=plotrange,type='l',lwd=2,lty=1,col=1,log='x')
+  
+  for(col in seq(nVary)){
+    modelname <- modelsVary[col]
+    score <- res_vary[[modelname]]$s
+    lines(npairs_list, score, type='l',lty=1,lwd=2,col=col)
+    if (key) {
+      idx <- res_vary[[modelname]]$k
+      points(npairs_list[idx], score[idx], lwd=2,lty=1,pch=col,col=col,cex=2)
+    }
+  }
+  
+  for(col in seq(nStatic)){
+    modelname <- modelsStatic[col]
+    ref <- res_static[[modelname]]
+    points(npairs_list, rep(ref,length(npairs_list)), type='l',lty=5,lwd=1,col=col,cex=1)
+  }
+  
+  molist <- c(modelsVary,modelsStatic)
+  legend("bottomleft", legend=molist,
+         col=c(seq(nVary),seq(nStatic)),lty=c(rep(1,nVary),rep(5,nStatic)),
+         lwd=c(rep(2,nVary),rep(1,nStatic)),cex=1.25)
+  grid(ny=16)
+}
 ```
 
 ## session info
