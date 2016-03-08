@@ -49,7 +49,7 @@ Models come from 3 categories (presented in different ways for ease of coding im
 
 ```{r param, cache = TRUE}
 # set list of C parameters for SVM-based models
-Cpara_list <- c(0.01, 0.1, 1, 10, 100, 1000)
+Cpara_list <- 10^(-2:3)
 names(Cpara_list) <- paste('C',1:length(Cpara_list),sep='')
 
 # set list of #genepairs for corresponding models
@@ -147,14 +147,24 @@ for (prefixname in prefixlist) {
     }
   }
 }
-rownames(table_acc) <- nameafter[match(rownames(table_acc), namebefore)] # re-name 
+rownames(table_acc) <- nameafter[match(rownames(table_acc), namebefore)] # re-name
+table_acc <- table_acc[order(rownames(table_acc)), ] # re-order
 table_acc <- rbind(AVERAGE = round(colMeans(table_acc), 2), table_acc) # add AVERAGE scores over all datasets
-table_acc <- table_acc[order(rownames(table_acc)),order(table_acc["AVERAGE",],decreasing = TRUE)] # re-order
+table_acc <- table_acc[ ,order(table_acc["AVERAGE",],decreasing = TRUE)] # re-order
 # show score table
 t(table_acc)
 # show boxplot
 par(mar = c(10, 5, 1, 1) + 0.1, font.lab = 2, font.axis = 2, font.main = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
-boxplot(table_acc[-1,]/100, las = 2, ylab = 'acc', col='royalblue2')
+boxplot(table_acc[-1, ]/100, las = 2, ylab = 'acc', col='royalblue2')
+# wilcox test
+pmatrix <- matrix(1, nrow = ncol(table_acc), ncol = ncol(table_acc), 
+                  dimnames = list(colnames(table_acc),colnames(table_acc)))
+for(i in 1:ncol(table_acc)){
+  for(j in 1:ncol(table_acc)){
+    pmatrix[i,j] = round(wilcox.test(x = table_acc[-1,i], y = table_acc[-1,j], alternative = "greater", paired = TRUE, mu = 0)$p.value, 4)
+  }
+}
+pmatrix
 ```
 
 Among SVM-based models we compare the tuning sensitivity to C parameter that could impact on the performance in terms of classification accuracy, where KFD are set as reference baseline models.
@@ -290,6 +300,138 @@ for (prefixname in prefixlist) {
   legend("bottomleft", legend=molist,
          col=c(seq(nVary),seq(nStatic)),lty=c(rep(1,nVary),rep(5,nStatic)),
          lwd=c(rep(2,nVary),rep(1,nStatic)),cex=1.25)
+  grid(ny=16)
+}
+```
+
+## Kernel approximation study
+
+Now we turn to study the effect of stablized Kendall kernel in place of the classic one solely based on rank orders. We only focus on the case of uniform noise varying window size.
+
+```{r approx_param, cache = TRUE}
+prefixlist <- c("cns") # only run on one dataset for now (more models can be added to the vector)
+modelname <- "SVMkdtALLquadratic" # we only study kernel jittered with uniform noise
+
+# number of selected window sizes then specific values are chosen differently for each dataset
+nEXTpara_out <- 20
+
+# number of sampled noise perturbation
+nMaxNum <- 35
+MaxNum_list <- seq(nMaxNum); names(MaxNum_list) <- paste('Num', 1:length(MaxNum_list), sep='')
+```
+
+```{r approx_perf, cache = TRUE, message = FALSE}
+for(prefixname in prefixlist){
+  xdat <- rbind(get(prefixname)$xtrain,get(prefixname)$xtest)
+  ydat <- factor(c(get(prefixname)$ytrain, get(prefixname)$ytest), labels = levels(get(prefixname)$ytrain))
+  
+  set.seed(1226)
+  # split data if no separate test set available
+  if(is.null(get(prefixname)$xtest) || is.null(get(prefixname)$ytest)){
+    tr2tstFolds <- createMultiFolds(1:nrow(xdat), k=5, times=10)
+  } else{
+    tr2tstFolds <- list(tr2tst = 1:nrow(get(prefixname)$xtrain))
+  }
+  
+  # set list of window sizes for noise perturbations
+  EXTpara_list <- generateEXTpara_list(modelname, xdat, n = nEXTpara_out) # min diff to range in log scale
+  
+  # stabilized kernel varying window sizes
+  assign(paste('res_stab',prefixname,sep='_'), 
+         mclapply(EXTpara_list, function(extpara){
+           # computes kernel matrix
+           message('Computing kernel matrix ... prefixname = ', prefixname, ', ext_para = ', extpara)
+           kf <- kdtQUADRATICdot(a = extpara)
+           kernmat <- computeKernelMatrix(xdata = xdat, kf = kf)
+           res <- perfSVMKernelMatrix(model = modelname, prefix = prefixname, kmat = kernmat, grp = ydat, 
+                                      tr2tstFolds = tr2tstFolds, Cpara_list = Cpara_list, 
+                                      extension_para = extpara)
+           return(res)
+         }, mc.cores = 8))
+  
+  # MC approx for stablized kernel varying window sizes and number of sampled noise
+  assign(paste('res_approx',prefixname,sep='_'), 
+         mclapply(EXTpara_list, function(extpara){
+           # generate noise matrices
+           set.seed(101)
+           noiseMatrix_list <- replicate(n = MaxNum_list[length(MaxNum_list)],
+                                         expr = matrix(runif(length(xdat),min=-extpara,max=extpara),
+                                                       nrow=nrow(xdat),ncol=ncol(xdat), 
+                                                       dimnames = dimnames(xdat)), 
+                                         simplify = FALSE)
+           
+           # computes kernel matrix
+           kernmat <- NULL
+           ss <- lapply(MaxNum_list, function(MaxNum){
+             message('Computing kernel matrix ... prefixname = ', prefixname, ', ext_para = ', extpara, ', noiseNum = ', MaxNum)
+             kernmat <<- approxKernelMatrix(xdata = xdat, kf = cor.fk, num = MaxNum, 
+                                            noise = noiseMatrix_list, kmold = kernmat)
+             res <- perfSVMKernelMatrix(model = modelname, prefix = prefixname, kmat = kernmat, grp = ydat, 
+                                        tr2tstFolds = tr2tstFolds, Cpara_list = Cpara_list, 
+                                        extension_para = extpara)
+             return(res)
+           })
+           return(ss)
+         }, mc.cores = 8))
+}
+```
+
+```{r approx_plot}
+for (prefixname in prefixlist) {
+  mainname <- nameafter[which(prefixname == namebefore)]
+  key <- (prefixname %in% indepvallist)
+  
+  # stab-related
+  res <- get(paste('res_stab',prefixname,sep='_'))
+  ext <- sapply(res, function(u){u$extension_para})
+  acc <- sapply(res, function(u){u$acc})
+  
+  # approx-related
+  res <- get(paste('res_approx',prefixname,sep='_'))
+  ext_approx <- sapply(res, function(u){u[[1]]$extension_para})
+  acc_approx_list <- lapply(seq(length(res[[1]])), function(num){sapply(res, function(u){u[[num]]$acc})})
+  names(acc_approx_list) <- names(res[[1]])
+  # now pick a window size and plot MC approx performance
+  idx <- names(which.max(acc))
+  acc_approxSingleWindow <- sapply(res[[idx]], function(u){u$acc})
+  ext_approxSingleWindow <- ext[[idx]]
+  ref_stab <- acc[which(ext_approx == ext_approxSingleWindow)]
+  
+  if (key) {
+    res <- res_indepval[[prefixname]]
+    ref <- res$SVMkdtALL$acc[which.max(res$SVMkdtALL$cvacc)]
+  } else {
+    res <- res_crossval[[prefixname]]
+    ref <- mean(sapply(res, function(foldres){foldres$SVMkdtALL$acc[which.max(foldres$SVMkdtALL$cvacc)]}))
+  }
+  
+  # plotting with varying number of sampled noise and varying number of window sizes
+  maxnum <- min(ceiling(length(acc_approx_list)/2), 5)
+  plotrange <- c(min(floor(10*acc)/10), max(ceiling(10*acc)/10))
+  par(font.lab = 2, font.axis = 2, font.main = 2, font = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
+  plot(2*ext, acc, main=mainname, xlab="Noise window size a", type='o', 
+       ylim=plotrange, ylab=ifelse(key,"acc","cvacc"), lwd=2,lty=1,col=1,log='x')
+  points(2*ext, rep(ref,length(ext)), lwd = 1, type = 'l', lty=5, col=2)
+  for(col in seq(maxnum)){
+    lines(2*ext_approx, acc_approx_list[[2*col-1]], lwd = 2, lty=1, col=col)
+  }
+  legend("topleft", legend=c('SVMkdtALLalt--exact', paste('SVMkdtALLalt--MCapprox (D=',2*seq(maxnum)-1,')', sep=''), 'SVMkdtALL'), 
+         col=c(1,seq(maxnum),2),lty=c(1, rep(1,maxnum), 5), pch=c(1, rep(NA,maxnum), NA), lwd=c(2,rep(2,maxnum), 1),
+         text.width=strwidth("10000000000000000000000000000000000"), cex=1.25)
+  grid(ny=16)
+  
+  # plotting with more varying number of sampled noise for a specified window size
+  maxnum <- length(acc_approxSingleWindow)
+  plotrange <- c(min(floor(10*acc_approxSingleWindow)/10), max(ceiling(10*acc_approxSingleWindow)/10))
+  par(font.lab = 2, font.axis = 2, font.main = 2, font = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
+  plot(MaxNum_list, acc_approxSingleWindow, main=mainname, 
+       ylim=plotrange, xlab='Number D of random jitter', 
+       ylab=ifelse(key,"acc","cvacc"), type='l',lwd=2,lty=1,col=1)
+  points(MaxNum_list, rep(ref_stab, length(MaxNum_list)), type='o', lwd = 2, lty=1, col=1)
+  points(MaxNum_list, rep(ref,length(MaxNum_list)), lwd = 1, type = 'l', lty=5, col=2)
+  legend("topleft", 
+         legend=c(paste('SVMkdtALLalt--exact (a=',round(2*ext_approxSingleWindow,0),')', sep=''),paste('SVMkdtALLalt--MCapprox (a=',round(2*ext_approxSingleWindow,0),')', sep=''), 'SVMkdtALL'),
+         col=c(1,1,2),lty=c(1,1,5),lwd=c(2,2,1),pch=c(1,NA,NA),text.width = strwidth("100000000000000000000000000000000000000"),cex=1.25)
   grid(ny=16)
 }
 ```
