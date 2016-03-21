@@ -376,17 +376,18 @@ perfNOpara <- function(model, prefix, xtrain, ytrain, xtest, ytest, foldIndices)
   
   ntr <- nrow(xtrain); nts <- nrow(xtest); num <- 1; cvacc = acc = NULL;
   
-  # cross-validating
-  message("Cross-validating")
-  foldscore <- lapply(foldIndices, function(fold){
-    message('Fold No.',num); num <<- num + 1;
-    pred <- switch(model,
-                   APMV = classifierAPMV(xtrain=xtrain[fold,,drop=F],ytrain=ytrain[fold],xtest=xtrain[-fold,,drop=F]),
-                   stop('Indefinite model input!'))
-    message('DONE!')
-    return(evaluateAcc(pred,ytrain[-fold]))
-  })
-  cvacc <- mean(unlist(foldscore),na.rm=TRUE)
+  # NO cross-validating
+  cvacc <- c(-100)
+#   message("Cross-validating")
+#   foldscore <- lapply(foldIndices, function(fold){
+#     message('Fold No.',num); num <<- num + 1;
+#     pred <- switch(model,
+#                    APMV = classifierAPMV(xtrain=xtrain[fold,,drop=F],ytrain=ytrain[fold],xtest=xtrain[-fold,,drop=F]),
+#                    stop('Indefinite model input!'))
+#     message('DONE!')
+#     return(evaluateAcc(pred,ytrain[-fold]))
+#   })
+#   cvacc <- mean(unlist(foldscore),na.rm=TRUE)
   
   # indep-validating
   if(!is.null(xtest)){
