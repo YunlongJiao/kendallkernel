@@ -5,7 +5,8 @@ date: "26 February 2016"
 output: html_document
 ---
 
-```{r setup, eval = TRUE, message = FALSE}
+
+```r
 knitr::opts_chunk$set(error = FALSE, warning = FALSE, fig.width = 8, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "figure/", cache.path = "cache/")
 set.seed(35875954)
 
@@ -23,7 +24,8 @@ dyn.load("src/utiles.so") # for other C codes
 
 All datasets are taken from publicly available sources. Briefly, for datasets with two independent parts (marked `indepval`), predictions are reported on the test set whilst 5-fold cv training is done on training set; for datasets with only one part (marked `crossval`), predictions are reported by 10 times of 5-fold cv whilst (nested) 5-fold cv is done on each training fold for parameter tuning. See [the paper](https://hal.archives-ouvertes.fr/hal-01279273) for detailed summary of the datasets.
 
-```{r data, cache = TRUE}
+
+```r
 # datasets
 indepvallist <- c('bc', 'lcbwh', 'pc') # two sets are available
 crossvallist <- c('ct', 'ocpbsii', 'cns', 'pcout', 'transbig', 'lung_annarbor_outcome', 'Wang_Breastcancer') # only one set is available so that double-nested cv is necessary
@@ -39,6 +41,20 @@ cbind(dataset = (namebefore <- c("bc", "transbig", "Wang_Breastcancer", "ct", "l
       alias = (nameafter <- c("BC1", "BC2", "BC3", "CT", "LA1", "LC2", "MB", "OC", "PC1", "PC2")))
 ```
 
+```
+##       dataset                 alias
+##  [1,] "bc"                    "BC1"
+##  [2,] "transbig"              "BC2"
+##  [3,] "Wang_Breastcancer"     "BC3"
+##  [4,] "ct"                    "CT" 
+##  [5,] "lung_annarbor_outcome" "LA1"
+##  [6,] "lcbwh"                 "LC2"
+##  [7,] "cns"                   "MB" 
+##  [8,] "ocpbsii"               "OC" 
+##  [9,] "pc"                    "PC1"
+## [10,] "pcout"                 "PC2"
+```
+
 ## Model performance comparison
 
 Models come from 3 categories (presented in different ways for ease of coding implementation or for ease of scoring and plotting):
@@ -47,7 +63,8 @@ Models come from 3 categories (presented in different ways for ease of coding im
 2. Models involving only tuning C that are SVM with linear, Gaussian RBF, (2nd-order homogeneous) polynomial and Kendall kernel where KFD (Kernel Fisher Discriminant) are penetrated in SVM codes as simple reference kernel machines
 3. Models involving tuning C and k that are SVM with top-k pairs of features with aforementioned kernels
 
-```{r param, cache = TRUE}
+
+```r
 # set list of C parameters for SVM-based models
 Cpara_list <- 10^(-2:3)
 names(Cpara_list) <- paste('C',1:length(Cpara_list),sep='')
@@ -75,7 +92,8 @@ modelsVary <- c("SVMlinearTOP", "SVMkdtTOP", "SVMpolynomialTOP", "kTSP")
 modelsStatic <- c("SVMlinearALL", "SVMkdtALL", "SVMpolynomialALL", "TSP", "APMV")
 ```
 
-```{r indepval, cache = TRUE, message = FALSE}
+
+```r
 # indepval datasets
 res_indepval <- mclapply(indepvallist, function(prefixname){
   xtr <- get(prefixname)$xtrain; ytr <- get(prefixname)$ytrain
@@ -91,7 +109,8 @@ res_indepval <- mclapply(indepvallist, function(prefixname){
 names(res_indepval) <- indepvallist
 ```
 
-```{r crossval, cache = TRUE, message = FALSE}
+
+```r
 # crossval datasets
 res_crossval <- mclapply(crossvallist, function(prefixname){
   xtr <- get(prefixname)$xtrain; ytr <- get(prefixname)$ytrain
@@ -114,7 +133,8 @@ names(res_crossval) <- crossvallist
 
 We report classification accuracy across different datasets and different models.
 
-```{r perf_table}
+
+```r
 modelsKFD <- sub("SVM", "KFD", modelsConly)
 table_acc <- matrix(-100, 
                     nrow = length(prefixlist), ncol = length(c(modelslist,modelsKFD)),
@@ -154,9 +174,50 @@ table_acc <- rbind(AVERAGE = round(colMeans(table_acc), 2), table_acc) # add AVE
 table_acc <- table_acc[ ,order(table_acc["AVERAGE",],decreasing = TRUE)] # re-order
 # show score table
 t(table_acc)
+```
+
+```
+##                  AVERAGE   BC1   BC2   BC3    CT   LA1   LC2    MB     OC
+## SVMkdtALL          79.39 78.95 71.31 67.34 85.78 70.98 97.99 63.67  99.48
+## SVMlinearTOP       77.16 84.21 69.29 67.11 84.19 63.92 97.32 65.17  99.41
+## SVMlinearALL       76.09 78.95 71.67 64.27 86.73 70.23 97.99 62.67  99.64
+## SVMkdtTOP          75.50 52.63 70.61 65.81 85.46 67.70 97.99 58.33  99.92
+## SVMpolynomialALL   74.54 68.42 71.62 63.66 78.43 70.53 98.66 61.17  99.28
+## KFDkdtALL          74.33 63.16 59.41 67.22 85.46 59.08 99.33 59.33  98.73
+## kTSP               74.03 57.89 58.22 64.47 87.23 61.70 97.99 56.00  99.92
+## SVMpolynomialTOP   73.99 63.16 69.44 66.26 79.14 65.98 99.33 60.00  99.21
+## KFDlinearALL       71.81 63.16 60.43 67.52 77.26 57.24 97.99 59.50 100.00
+## KFDpolynomialALL   71.39 63.16 60.48 67.38 75.10 58.52 97.99 60.33 100.00
+## TSP                69.71 68.42 49.58 57.80 85.61 58.96 95.97 52.67  99.80
+## SVMrbf             69.31 63.16 71.41 65.87 81.18 70.84 93.96 63.83  98.85
+## KFDrbf             66.50 63.16 60.38 66.17 84.33 58.62 97.32 60.17  98.34
+## APMV               61.91 84.21 65.98 33.96 64.49 33.60 89.93 42.17  85.19
+##                     PC1   PC2
+## SVMkdtALL        100.00 58.40
+## SVMlinearTOP      85.29 55.70
+## SVMlinearALL      73.53 55.17
+## SVMkdtTOP         97.06 59.47
+## SVMpolynomialALL  79.41 54.23
+## KFDkdtALL         97.06 54.57
+## kTSP             100.00 56.83
+## SVMpolynomialTOP  88.24 49.10
+## KFDlinearALL      73.53 61.43
+## KFDpolynomialALL  73.53 57.43
+## TSP               76.47 51.83
+## SVMrbf            26.47 57.50
+## KFDrbf            26.47 50.00
+## APMV              73.53 46.00
+```
+
+```r
 # show boxplot
 par(mar = c(10, 5, 1, 1) + 0.1, font.lab = 2, font.axis = 2, font.main = 2, cex.axis = 1.5, cex.lab = 1.5, cex.sub = 1.5)
 boxplot(table_acc[-1, ]/100, las = 2, ylab = 'acc', col='royalblue2')
+```
+
+![plot of chunk perf_table](figure/perf_table-1.pdf) 
+
+```r
 # wilcox test
 pmatrix <- matrix(1, nrow = ncol(table_acc), ncol = ncol(table_acc), 
                   dimnames = list(colnames(table_acc),colnames(table_acc)))
@@ -168,9 +229,58 @@ for(i in 1:ncol(table_acc)){
 pmatrix
 ```
 
+```
+##                  SVMkdtALL SVMlinearTOP SVMlinearALL SVMkdtTOP
+## SVMkdtALL           1.0000       0.0654       0.0707    0.0290
+## SVMlinearTOP        0.9473       1.0000       0.3477    0.7217
+## SVMlinearALL        0.9463       0.6875       1.0000    0.3611
+## SVMkdtTOP           0.9780       0.3125       0.6822    1.0000
+## SVMpolynomialALL    0.9902       0.9033       0.9033    0.6152
+## KFDkdtALL           0.9928       0.8125       0.8125    0.6880
+## kTSP                0.9850       0.7539       0.6822    0.7794
+## SVMpolynomialTOP    0.9971       0.8838       0.9199    0.7842
+## KFDlinearALL        0.9780       0.9580       0.9293    0.7232
+## KFDpolynomialALL    0.9911       0.9678       0.9463    0.8568
+## TSP                 0.9980       0.9951       0.9932    0.9678
+## SVMrbf              0.9951       0.8623       0.8623    0.6152
+## KFDrbf              1.0000       0.9954       0.9971    0.9033
+## APMV                0.9990       0.9968       0.9954    0.9814
+##                  SVMpolynomialALL KFDkdtALL   kTSP SVMpolynomialTOP
+## SVMkdtALL                  0.0137    0.0095 0.0212           0.0049
+## SVMlinearTOP               0.1162    0.2158 0.2783           0.1377
+## SVMlinearALL               0.1162    0.2158 0.3611           0.0967
+## SVMkdtTOP                  0.4229    0.3631 0.2643           0.2461
+## SVMpolynomialALL           1.0000    0.4609 0.3848           0.2783
+## KFDkdtALL                  0.5771    1.0000 0.3994           0.4721
+## kTSP                       0.6523    0.6394 1.0000           0.5771
+## SVMpolynomialTOP           0.7539    0.5832 0.4609           1.0000
+## KFDlinearALL               0.9033    0.7614 0.5000           0.8819
+## KFDpolynomialALL           0.9473    0.6389 0.5000           0.8819
+## TSP                        0.9710    0.9580 0.9756           0.9473
+## SVMrbf                     0.6523    0.4528 0.3125           0.3611
+## KFDrbf                     0.9580    0.9710 0.7217           0.9037
+## APMV                       0.9863    0.9814 0.9814           0.9814
+##                  KFDlinearALL KFDpolynomialALL    TSP SVMrbf KFDrbf   APMV
+## SVMkdtALL              0.0290           0.0122 0.0029 0.0068 0.0010 0.0020
+## SVMlinearTOP           0.0527           0.0420 0.0068 0.1611 0.0064 0.0046
+## SVMlinearALL           0.0917           0.0707 0.0098 0.1611 0.0049 0.0064
+## SVMkdtTOP              0.3178           0.1716 0.0420 0.4229 0.1162 0.0244
+## SVMpolynomialALL       0.1162           0.0654 0.0378 0.3848 0.0527 0.0186
+## KFDkdtALL              0.2768           0.4064 0.0527 0.5936 0.0378 0.0244
+## kTSP                   0.5472           0.5472 0.0322 0.7217 0.3125 0.0244
+## SVMpolynomialTOP       0.1432           0.1432 0.0654 0.6822 0.1181 0.0244
+## KFDlinearALL           1.0000           0.3375 0.1875 0.5936 0.1869 0.0486
+## KFDpolynomialALL       0.7353           1.0000 0.2461 0.6822 0.0691 0.0486
+## TSP                    0.8389           0.7842 1.0000 0.7842 0.5000 0.0801
+## SVMrbf                 0.4528           0.3611 0.2461 1.0000 0.0917 0.1377
+## KFDrbf                 0.8432           0.9453 0.5391 0.9293 1.0000 0.2158
+## APMV                   0.9622           0.9622 0.9346 0.8838 0.8125 1.0000
+```
+
 Among SVM-based models we compare the tuning sensitivity to C parameter that could impact on the performance in terms of classification accuracy, where KFD are set as reference baseline models.
 
-```{r perf_C}
+
+```r
 nConly <- length(modelsConly) # number of SVM models (KFD implemented within each)
 for (prefixname in prefixlist) {
   mainname <- nameafter[which(prefixname == namebefore)]
@@ -216,9 +326,12 @@ for (prefixname in prefixlist) {
 }
 ```
 
+![plot of chunk perf_C](figure/perf_C-1.pdf) ![plot of chunk perf_C](figure/perf_C-2.pdf) ![plot of chunk perf_C](figure/perf_C-3.pdf) ![plot of chunk perf_C](figure/perf_C-4.pdf) ![plot of chunk perf_C](figure/perf_C-5.pdf) ![plot of chunk perf_C](figure/perf_C-6.pdf) ![plot of chunk perf_C](figure/perf_C-7.pdf) ![plot of chunk perf_C](figure/perf_C-8.pdf) ![plot of chunk perf_C](figure/perf_C-9.pdf) ![plot of chunk perf_C](figure/perf_C-10.pdf) 
+
 Now we study the impact of feature selection onto classification accuracy. TSP-based models serve as reference models.
 
-```{r perf_fs}
+
+```r
 nVary <- length(modelsVary) # number of vary-K models
 nStatic <- length(modelsStatic) # number of K-independent models
 for (prefixname in prefixlist) {
@@ -305,11 +418,14 @@ for (prefixname in prefixlist) {
 }
 ```
 
+![plot of chunk perf_fs](figure/perf_fs-1.pdf) ![plot of chunk perf_fs](figure/perf_fs-2.pdf) ![plot of chunk perf_fs](figure/perf_fs-3.pdf) ![plot of chunk perf_fs](figure/perf_fs-4.pdf) ![plot of chunk perf_fs](figure/perf_fs-5.pdf) ![plot of chunk perf_fs](figure/perf_fs-6.pdf) ![plot of chunk perf_fs](figure/perf_fs-7.pdf) ![plot of chunk perf_fs](figure/perf_fs-8.pdf) ![plot of chunk perf_fs](figure/perf_fs-9.pdf) ![plot of chunk perf_fs](figure/perf_fs-10.pdf) 
+
 ## Kernel approximation study
 
 Now we turn to study the effect of stablized Kendall kernel in place of the classic one solely based on rank orders. We only focus on the case of uniform noise varying window size.
 
-```{r approx_param, cache = TRUE}
+
+```r
 prefixlist <- c("cns") # only run on one dataset for now (more models can be added to the vector)
 modelname <- "SVMkdtALLquadratic" # we only study kernel jittered with uniform noise
 
@@ -321,7 +437,8 @@ nMaxNum <- 35
 MaxNum_list <- seq(nMaxNum); names(MaxNum_list) <- paste('Num', 1:length(MaxNum_list), sep='')
 ```
 
-```{r approx_perf, cache = TRUE, message = FALSE}
+
+```r
 for(prefixname in prefixlist){
   xdat <- rbind(get(prefixname)$xtrain,get(prefixname)$xtest)
   ydat <- factor(c(get(prefixname)$ytrain, get(prefixname)$ytest), labels = levels(get(prefixname)$ytrain))
@@ -377,7 +494,8 @@ for(prefixname in prefixlist){
 }
 ```
 
-```{r approx_plot}
+
+```r
 for (prefixname in prefixlist) {
   mainname <- nameafter[which(prefixname == namebefore)]
   key <- (prefixname %in% indepvallist)
@@ -437,8 +555,73 @@ for (prefixname in prefixlist) {
 }
 ```
 
+![plot of chunk approx_plot](figure/approx_plot-1.pdf) ![plot of chunk approx_plot](figure/approx_plot-2.pdf) 
+
 ## session info
 
-```{r session_info}
+
+```r
 devtools::session_info()
+```
+
+```
+## Session info --------------------------------------------------------------
+```
+
+```
+##  setting  value                       
+##  version  R version 3.2.3 (2015-12-10)
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       <NA>                        
+##  date     2016-04-05
+```
+
+```
+## Packages ------------------------------------------------------------------
+```
+
+```
+##  package      * version date       source        
+##  car            2.1-0   2015-09-03 CRAN (R 3.2.2)
+##  caret        * 6.0-62  2015-11-23 CRAN (R 3.2.2)
+##  codetools      0.2-14  2015-07-15 CRAN (R 3.2.2)
+##  colorspace     1.2-6   2015-03-11 CRAN (R 3.2.2)
+##  devtools       1.9.1   2015-09-11 CRAN (R 3.2.2)
+##  digest         0.6.8   2014-12-31 CRAN (R 3.2.2)
+##  evaluate       0.8     2015-09-18 CRAN (R 3.2.2)
+##  foreach        1.4.3   2015-10-13 CRAN (R 3.2.2)
+##  formatR        1.2.1   2015-09-18 CRAN (R 3.2.2)
+##  ggplot2      * 1.0.1   2015-03-17 CRAN (R 3.2.2)
+##  gtable         0.1.2   2012-12-05 CRAN (R 3.2.2)
+##  iterators      1.0.8   2015-10-13 CRAN (R 3.2.2)
+##  kernlab      * 0.9-22  2015-08-05 CRAN (R 3.2.2)
+##  knitr        * 1.11    2015-08-14 CRAN (R 3.2.2)
+##  lattice      * 0.20-33 2015-07-14 CRAN (R 3.2.2)
+##  lme4           1.1-10  2015-10-06 CRAN (R 3.2.2)
+##  magrittr       1.5     2014-11-22 CRAN (R 3.2.2)
+##  MASS           7.3-43  2015-07-16 CRAN (R 3.2.2)
+##  Matrix         1.2-2   2015-07-08 CRAN (R 3.2.2)
+##  MatrixModels   0.4-1   2015-08-22 CRAN (R 3.2.2)
+##  memoise        0.2.1   2014-04-22 CRAN (R 3.2.2)
+##  mgcv           1.8-7   2015-07-23 CRAN (R 3.2.2)
+##  minqa          1.2.4   2014-10-09 CRAN (R 3.2.2)
+##  munsell        0.4.2   2013-07-11 CRAN (R 3.2.2)
+##  mvtnorm        1.0-3   2015-07-22 CRAN (R 3.2.2)
+##  nlme           3.1-121 2015-06-29 CRAN (R 3.2.2)
+##  nloptr         1.0.4   2014-08-04 CRAN (R 3.2.2)
+##  nnet           7.3-10  2015-06-29 CRAN (R 3.2.2)
+##  pbkrtest       0.4-2   2014-11-13 CRAN (R 3.2.2)
+##  pcaPP        * 1.9-60  2014-10-22 CRAN (R 3.2.2)
+##  plyr           1.8.3   2015-06-12 CRAN (R 3.2.2)
+##  proto          0.3-10  2012-12-22 CRAN (R 3.2.2)
+##  quantreg       5.19    2015-08-31 CRAN (R 3.2.2)
+##  Rcpp           0.12.2  2015-11-15 CRAN (R 3.2.2)
+##  reshape2       1.4.1   2014-12-06 CRAN (R 3.2.2)
+##  scales         0.3.0   2015-08-25 CRAN (R 3.2.2)
+##  SparseM        1.7     2015-08-15 CRAN (R 3.2.2)
+##  stringi        1.0-1   2015-10-22 CRAN (R 3.2.2)
+##  stringr        1.0.0   2015-04-30 CRAN (R 3.2.2)
 ```
