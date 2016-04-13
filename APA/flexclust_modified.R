@@ -443,7 +443,7 @@ dist_kernelKmeans <- function(x, centers)
   if (ncol(x) != ncol(centers)) {
     stop(sQuote("x"), " and ", sQuote("centers"), " must have the same number of columns")
   }
-  distL2(r = x, centers = centers)
+  kernrank:::distL2(r = x, centers = centers)
 }
 
 cent_kernelKmeans <- function(x, weights = NULL)
