@@ -8,28 +8,28 @@ This repo contains `R` codes for reproducing results and more experiments from
 
 ```r
 setwd("[somepath]/kendallkernel_demo/APA/")
-install.packages(c("knitr", "combinat", "caret", "mvtnorm", "reshape2", "ggplot2", "gplots", "flexclust", "Rankcluster", "devtools"))
+install.packages(c("rmarkdown", "combinat", "caret", "mvtnorm", "reshape2", "ggplot2", "gplots", "flexclust", "Rankcluster", "devtools"))
 devtools::install_github("YunlongJiao/kernrank")
-knitr::knit2html("analysis.Rmd")
+rmarkdown::render("analysis.Rmd")
 ```
 
 # Cluster multivariate partial rankings (eurovision)
 
 ```r
 setwd("[somepath]/kendallkernel_demo/eurovision/")
-install.packages(c("knitr", "combinat", "reshape2", "ggplot2", "gplots", "kernlab", "Rankcluster", "cluster", "devtools"))
+install.packages(c("rmarkdown", "combinat", "reshape2", "ggplot2", "gplots", "kernlab", "Rankcluster", "cluster", "devtools"))
 devtools::install_github("YunlongJiao/kernrank")
-knitr::knit2html("analysis.Rmd")
+rmarkdown::render("analysis.Rmd")
 ```
 
 # Classify gene expression data
 
 ```r
 setwd("[somepath]/kendallkernel_demo/geneexpr/")
-install.packages(c("knitr", "kernlab", "pcaPP", "caret"))
+install.packages(c("rmarkdown", "kernlab", "pcaPP", "caret"))
 system("R CMD SHLIB src/utiles.c", intern = TRUE)
 system("R CMD SHLIB src/tsp.c", intern = TRUE)
-knitr::knit2html("analysis.Rmd")
+rmarkdown::render("analysis.Rmd")
 ```
 
 # Notes

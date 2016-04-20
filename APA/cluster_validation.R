@@ -78,7 +78,7 @@ wdistinter <- function(cl, distmat, weights = NULL, clustering = NULL, ...)
     weights <- rep(1, length(clustering))
   }
   diag(distmat) <- 0
-  dinter <- apply(matrix(combn(unique(clustering), 2), nrow = 2), 2, function(i){
+  dinter <- apply(matrix(combinat::combn(unique(clustering), 2), nrow = 2), 2, function(i){
     idx1 <- which(clustering == i[1])
     idx2 <- which(clustering == i[2])
     wmat <- tcrossprod(weights[idx1], weights[idx2])
@@ -101,7 +101,7 @@ wdunn <- function(cl, distmat, weights = NULL, clustering = NULL, ...)
     weights <- rep(1, length(clustering))
   }
   diag(distmat) <- 0
-  sep <- apply(matrix(combn(unique(clustering), 2), nrow = 2), 2, function(i){
+  sep <- apply(matrix(combinat::combn(unique(clustering), 2), nrow = 2), 2, function(i){
     idx1 <- which(clustering == i[1])
     idx2 <- which(clustering == i[2])
     min(distmat[idx1,idx2])

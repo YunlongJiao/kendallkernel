@@ -369,7 +369,7 @@ cent_bruteKmeans <- function(x, weights = NULL)
   if (is.null(weights)) {
     weights <- rep(1, nrow(x))
   }
-  perm <- do.call("rbind", permn(ncol(x)))
+  perm <- do.call("rbind", combinat::permn(ncol(x)))
   dist <- AllKendall(r = x, seqs = perm)
   idx <- which.min(colSums(dist * weights))
   perm[idx, ]
@@ -394,7 +394,7 @@ cent_copelandKmeans <- function(x, weights = NULL)
   }
   
   abils <- ncol(x)
-  inds <- combn(abils, 2)
+  inds <- combinat::combn(abils, 2)
   num <- c(0, cumsum((abils-1):1))
   if (is.vector(x)) {
     x <- as.matrix(x, nrow = 1)
