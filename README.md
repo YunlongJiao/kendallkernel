@@ -22,7 +22,7 @@ devtools::install_github("YunlongJiao/kernrank")
 rmarkdown::render("analysis.Rmd")
 ```
 
-# Classify gene expression data
+# Classify gene expression data (geneexpr)
 
 ```r
 setwd("[somepath]/kendallkernel_demo/geneexpr/")
