@@ -27,6 +27,10 @@ source("kkmeans.R") # complementary functions for kernel kmeans for top-k rankin
 
 Each instance $x=(x^1,\dots,x^p)$ is represented by a multivariate rank in which $x^j=(x^{j1},\dots,x^{jm_j})$ for $1\leq j \leq p$ is a (partial) rank of $m_j$ items. For example, foot index $j$ should indicate the ranking preference of the same customer over several years or on several incomparable item sets, in which case we would like to exploit information in parallel when performing clustering. The `Rankcluster::eurovision` data is a typical example of such data.
 
+- **Mixture of multivariate isr** Implemented by `Rankcluster::rankclust` with mostly defaulted parameters (except repeat times), see [Jacques and Biernacki (2014)](https://hal.inria.fr/hal-00743384/). This mixture model is originally derived to deal with heterogeneous multivariate (partial) ranks via modeling the voting process using ISR model. NOTE parameter setting is inherited from Section 4 _Numerical experiments_ of the paper but repeated `run` times.
+
+- **Kendall kernel kmeans** Implemented by `kernlab::kkmeans` with defaulted parameters where kernel similarity values are kendall kernel for partial rankings further averaged over multivariates present. Specificallly, this method is model-free where similarities of partial ranks are adopted by convolution Kendall kernel and multivariate information is utilized by a simple average of kernel values from variates in parallel (NOTE other multiple kernel learning approaches apply).
+
 ```{r mpr, cache = TRUE}
 # load data - eurovision song contest data
 data(eurovision)
@@ -39,8 +43,6 @@ dimsize # dimension of multivariate partial rankings listed in format c(m_1,m_2,
 # number of clusters
 klist <- 2:6
 ```
-
-- **Mixture of multivariate isr** Implemented by `Rankcluster::rankclust` with mostly defaulted parameters (except repeat times), see [Jacques and Biernacki (2014)](https://hal.inria.fr/hal-00743384/). This mixture model is originally derived to deal with heterogeneous multivariate (partial) ranks via modeling the voting process using ISR model. NOTE parameter setting is inherited from Section 4 _Numerical experiments_ of the paper but repeated `run` times.
 
 ```{r mpr_rankcluster, cache = TRUE}
 key <- "mpr_rankcluster"
@@ -62,7 +64,26 @@ assign(key,
 proc.time() - ptm
 ```
 
-```{r mpr_rankcluster_analysis}
+```{r mpr_kkmeans, cache = TRUE}
+key <- "mpr_kkmeans"
+
+# set param
+nrepeats <- 100
+
+# get clustering results
+ptm <- proc.time()
+kmatrix <- kernmat(dat = dat, dimsize = dimsize, kf = "kendall_top", procf = "procf_Rankcluster")
+dmatrix <- distmat(kmatrix)
+assign(key, kkmeans_multi(kmatrix = kmatrix, klist = klist, nrepeats = nrepeats, dmatrix = dmatrix, seed = 31286963))
+proc.time() - ptm
+```
+
+## Results
+
+```{r mpr_rankcluster_analysis, results = "hold"}
+key <- "mpr_rankcluster"
+cat("-----------------> \t", key, "\t <-----------------")
+
 # get clustering statistics
 clstats_best <- lapply(seq(length(get(key)@K)), function(i){
   data.frame(nclust = get(key)@K[i], 
@@ -96,25 +117,22 @@ cl_best <- get(key)@results[[i_best]]
 cest <- cl_best@partition
 table(cest)
 split(countries, cest)
+
+# silhouette plot for best fit
+sil <- cluster::silhouette(x = cest, dmatrix = dmatrix)
+rownames(sil) <- countries
+par(font = 2, font.axis = 2, font.lab = 2, font.main = 2, font.sub = 2, 
+    cex = 1.25, cex.axis = 1.25, cex.lab = 2, cex.main = 2, cex.sub = 2, 
+    mar = c(4, 17, 0, 2) + 0.1)
+c6 <- c("tomato", "light blue", "forest green", "purple2", "goldenrod4", "gray20")
+plot.silhouette_modified(sil, max.strlen = max(nchar(countries)), col = c6[1:max(cest)], cex.names = 1.25,
+                         do.n.k = FALSE, do.clus.stat = FALSE)
 ```
 
-- **Kendall kernel kmeans** Implemented by `kernlab::kkmeans` with defaulted parameters where kernel similarity values are kendall kernel for partial rankings further averaged over multivariates present. Specificallly, this method is model-free where similarities of partial ranks are adopted by convolution Kendall kernel and multivariate information is utilized by a simple average of kernel values from variates in parallel (NOTE other multiple kernel learning approaches apply).
-
-```{r mpr_kkmeans, cache = TRUE}
+```{r mpr_kkmeans_analysis, results = "hold"}
 key <- "mpr_kkmeans"
+cat("-----------------> \t", key, "\t <-----------------")
 
-# set param
-nrepeats <- 100
-
-# get clustering results
-ptm <- proc.time()
-kmatrix <- kernmat(dat = dat, dimsize = dimsize, kf = "kendall_top", procf = "procf_Rankcluster")
-dmatrix <- distmat(kmatrix)
-assign(key, kkmeans_multi(kmatrix = kmatrix, klist = klist, nrepeats = nrepeats, dmatrix = dmatrix, seed = 31286963))
-proc.time() - ptm
-```
-
-```{r mpr_kkmeans_analysis}
 # get clustering statistics
 clstats <- kkmeans_stats(get(key))
 clstats_best <- kkmeans_stats_best(clstats)

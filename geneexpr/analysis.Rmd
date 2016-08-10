@@ -200,7 +200,7 @@ for (prefixname in prefixlist) {
   for (col in seq(nConly)) {
     modelname <- modelsConly[col]
     lines(Cpara_list,s[-1,modelname],type='l',lwd=2,lty=1,col=col) # *** see notes above
-    points(Cpara_list,rep(s[1,modelname],length(Cpara_list)),type='l',lty=5,lwd=1,col=col,cex=1)
+    points(Cpara_list,rep(s[1,modelname],length(Cpara_list)),type='b',lty=5,lwd=1,pch=col,col=col,cex=0.5)
     if (key) { # for indepval mark cv-tuned parameter
       idx <- which.max(res[[modelname]]$cvacc)
       score <- res[[modelname]]$acc
@@ -294,7 +294,7 @@ for (prefixname in prefixlist) {
   for(col in seq(nStatic)){
     modelname <- modelsStatic[col]
     ref <- res_static[[modelname]]
-    points(npairs_list, rep(ref,length(npairs_list)), type='l',lty=5,lwd=1,col=col,cex=1)
+    points(npairs_list, rep(ref,length(npairs_list)), type='b',lty=5,lwd=1,pch=col,col=col,cex=0.5)
   }
   
   molist <- c(modelsVary,modelsStatic)
