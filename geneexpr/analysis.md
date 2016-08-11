@@ -215,7 +215,7 @@ par(mar = c(10, 5, 1, 1) + 0.1, font.lab = 2, font.axis = 2, font.main = 2, cex.
 boxplot(table_acc[-1, ]/100, las = 2, ylab = 'acc', col='royalblue2')
 ```
 
-![plot of chunk perf_table](figure/perf_table-1.pdf) 
+![plot of chunk perf_table](figure/perf_table-1.pdf)
 
 ```r
 # wilcox test
@@ -310,23 +310,23 @@ for (prefixname in prefixlist) {
   for (col in seq(nConly)) {
     modelname <- modelsConly[col]
     lines(Cpara_list,s[-1,modelname],type='l',lwd=2,lty=1,col=col) # *** see notes above
-    points(Cpara_list,rep(s[1,modelname],length(Cpara_list)),type='l',lty=5,lwd=1,col=col,cex=1)
+    points(Cpara_list,rep(s[1,modelname],length(Cpara_list)),type='b',lty=5,lwd=1,pch=col,col=col,cex=1)
     if (key) { # for indepval mark cv-tuned parameter
       idx <- which.max(res[[modelname]]$cvacc)
       score <- res[[modelname]]$acc
-      points(Cpara_list[idx],score[idx],lwd=2,lty=1,pch=col,col=col,cex=2)
+      points(Cpara_list[idx],score[idx],lwd=2,lty=1,pch=col,col=col,cex=3)
     }
   }
   molist <- c(modelsConly,sub("SVM","KFD",modelsConly))
   molist[grep('rbf',molist)] <- paste(molist[grep('rbf',molist)],'ALL',sep='')
-  legend("bottomright",legend=molist,
-         col= c(seq(nConly),seq(nConly)),lty=c(rep(1,nConly),rep(5,nConly)),
+  legend("bottomright",legend=molist,pch=c(rep(NA,nConly),seq(nConly)),
+         col=c(seq(nConly),seq(nConly)),lty=c(rep(1,nConly),rep(5,nConly)),
          lwd=c(rep(2,nConly),rep(1,nConly)),cex=1.25)
   grid(ny=16)
 }
 ```
 
-![plot of chunk perf_C](figure/perf_C-1.pdf) ![plot of chunk perf_C](figure/perf_C-2.pdf) ![plot of chunk perf_C](figure/perf_C-3.pdf) ![plot of chunk perf_C](figure/perf_C-4.pdf) ![plot of chunk perf_C](figure/perf_C-5.pdf) ![plot of chunk perf_C](figure/perf_C-6.pdf) ![plot of chunk perf_C](figure/perf_C-7.pdf) ![plot of chunk perf_C](figure/perf_C-8.pdf) ![plot of chunk perf_C](figure/perf_C-9.pdf) ![plot of chunk perf_C](figure/perf_C-10.pdf) 
+![plot of chunk perf_C](figure/perf_C-1.pdf)![plot of chunk perf_C](figure/perf_C-2.pdf)![plot of chunk perf_C](figure/perf_C-3.pdf)![plot of chunk perf_C](figure/perf_C-4.pdf)![plot of chunk perf_C](figure/perf_C-5.pdf)![plot of chunk perf_C](figure/perf_C-6.pdf)![plot of chunk perf_C](figure/perf_C-7.pdf)![plot of chunk perf_C](figure/perf_C-8.pdf)![plot of chunk perf_C](figure/perf_C-9.pdf)![plot of chunk perf_C](figure/perf_C-10.pdf)
 
 Now we study the impact of feature selection onto classification accuracy. TSP-based models serve as reference models.
 
@@ -400,25 +400,25 @@ for (prefixname in prefixlist) {
     lines(npairs_list, score, type='l',lty=1,lwd=2,col=col)
     if (key) {
       idx <- res_vary[[modelname]]$k
-      points(npairs_list[idx], score[idx], lwd=2,lty=1,pch=col,col=col,cex=2)
+      points(npairs_list[idx], score[idx], lwd=2,lty=1,pch=col,col=col,cex=3)
     }
   }
   
   for(col in seq(nStatic)){
     modelname <- modelsStatic[col]
     ref <- res_static[[modelname]]
-    points(npairs_list, rep(ref,length(npairs_list)), type='l',lty=5,lwd=1,col=col,cex=1)
+    points(npairs_list, rep(ref,length(npairs_list)), type='b',lty=5,lwd=1,pch=col,col=col,cex=1)
   }
   
   molist <- c(modelsVary,modelsStatic)
-  legend("bottomleft", legend=molist,
+  legend("bottomleft", legend=molist,pch=c(rep(NA,nVary),seq(nStatic)),
          col=c(seq(nVary),seq(nStatic)),lty=c(rep(1,nVary),rep(5,nStatic)),
          lwd=c(rep(2,nVary),rep(1,nStatic)),cex=1.25)
   grid(ny=16)
 }
 ```
 
-![plot of chunk perf_fs](figure/perf_fs-1.pdf) ![plot of chunk perf_fs](figure/perf_fs-2.pdf) ![plot of chunk perf_fs](figure/perf_fs-3.pdf) ![plot of chunk perf_fs](figure/perf_fs-4.pdf) ![plot of chunk perf_fs](figure/perf_fs-5.pdf) ![plot of chunk perf_fs](figure/perf_fs-6.pdf) ![plot of chunk perf_fs](figure/perf_fs-7.pdf) ![plot of chunk perf_fs](figure/perf_fs-8.pdf) ![plot of chunk perf_fs](figure/perf_fs-9.pdf) ![plot of chunk perf_fs](figure/perf_fs-10.pdf) 
+![plot of chunk perf_fs](figure/perf_fs-1.pdf)![plot of chunk perf_fs](figure/perf_fs-2.pdf)![plot of chunk perf_fs](figure/perf_fs-3.pdf)![plot of chunk perf_fs](figure/perf_fs-4.pdf)![plot of chunk perf_fs](figure/perf_fs-5.pdf)![plot of chunk perf_fs](figure/perf_fs-6.pdf)![plot of chunk perf_fs](figure/perf_fs-7.pdf)![plot of chunk perf_fs](figure/perf_fs-8.pdf)![plot of chunk perf_fs](figure/perf_fs-9.pdf)![plot of chunk perf_fs](figure/perf_fs-10.pdf)
 
 ## Kernel approximation study
 
@@ -555,7 +555,7 @@ for (prefixname in prefixlist) {
 }
 ```
 
-![plot of chunk approx_plot](figure/approx_plot-1.pdf) ![plot of chunk approx_plot](figure/approx_plot-2.pdf) 
+![plot of chunk approx_plot](figure/approx_plot-1.pdf)![plot of chunk approx_plot](figure/approx_plot-2.pdf)
 
 ## session info
 
@@ -576,7 +576,7 @@ devtools::session_info()
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
 ##  tz       <NA>                        
-##  date     2016-04-05
+##  date     2016-08-11
 ```
 
 ```
@@ -594,11 +594,11 @@ devtools::session_info()
 ##  evaluate       0.8     2015-09-18 CRAN (R 3.2.2)
 ##  foreach        1.4.3   2015-10-13 CRAN (R 3.2.2)
 ##  formatR        1.2.1   2015-09-18 CRAN (R 3.2.2)
-##  ggplot2      * 1.0.1   2015-03-17 CRAN (R 3.2.2)
+##  ggplot2      * 2.1.0   2016-03-01 CRAN (R 3.2.3)
 ##  gtable         0.1.2   2012-12-05 CRAN (R 3.2.2)
 ##  iterators      1.0.8   2015-10-13 CRAN (R 3.2.2)
 ##  kernlab      * 0.9-22  2015-08-05 CRAN (R 3.2.2)
-##  knitr        * 1.11    2015-08-14 CRAN (R 3.2.2)
+##  knitr          1.12.3  2016-01-22 CRAN (R 3.2.3)
 ##  lattice      * 0.20-33 2015-07-14 CRAN (R 3.2.2)
 ##  lme4           1.1-10  2015-10-06 CRAN (R 3.2.2)
 ##  magrittr       1.5     2014-11-22 CRAN (R 3.2.2)
@@ -616,7 +616,6 @@ devtools::session_info()
 ##  pbkrtest       0.4-2   2014-11-13 CRAN (R 3.2.2)
 ##  pcaPP        * 1.9-60  2014-10-22 CRAN (R 3.2.2)
 ##  plyr           1.8.3   2015-06-12 CRAN (R 3.2.2)
-##  proto          0.3-10  2012-12-22 CRAN (R 3.2.2)
 ##  quantreg       5.19    2015-08-31 CRAN (R 3.2.2)
 ##  Rcpp           0.12.2  2015-11-15 CRAN (R 3.2.2)
 ##  reshape2       1.4.1   2014-12-06 CRAN (R 3.2.2)

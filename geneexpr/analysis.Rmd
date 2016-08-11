@@ -200,17 +200,17 @@ for (prefixname in prefixlist) {
   for (col in seq(nConly)) {
     modelname <- modelsConly[col]
     lines(Cpara_list,s[-1,modelname],type='l',lwd=2,lty=1,col=col) # *** see notes above
-    points(Cpara_list,rep(s[1,modelname],length(Cpara_list)),type='b',lty=5,lwd=1,pch=col,col=col,cex=0.5)
+    points(Cpara_list,rep(s[1,modelname],length(Cpara_list)),type='b',lty=5,lwd=1,pch=col,col=col,cex=1)
     if (key) { # for indepval mark cv-tuned parameter
       idx <- which.max(res[[modelname]]$cvacc)
       score <- res[[modelname]]$acc
-      points(Cpara_list[idx],score[idx],lwd=2,lty=1,pch=col,col=col,cex=2)
+      points(Cpara_list[idx],score[idx],lwd=2,lty=1,pch=col,col=col,cex=3)
     }
   }
   molist <- c(modelsConly,sub("SVM","KFD",modelsConly))
   molist[grep('rbf',molist)] <- paste(molist[grep('rbf',molist)],'ALL',sep='')
-  legend("bottomright",legend=molist,
-         col= c(seq(nConly),seq(nConly)),lty=c(rep(1,nConly),rep(5,nConly)),
+  legend("bottomright",legend=molist,pch=c(rep(NA,nConly),seq(nConly)),
+         col=c(seq(nConly),seq(nConly)),lty=c(rep(1,nConly),rep(5,nConly)),
          lwd=c(rep(2,nConly),rep(1,nConly)),cex=1.25)
   grid(ny=16)
 }
@@ -287,18 +287,18 @@ for (prefixname in prefixlist) {
     lines(npairs_list, score, type='l',lty=1,lwd=2,col=col)
     if (key) {
       idx <- res_vary[[modelname]]$k
-      points(npairs_list[idx], score[idx], lwd=2,lty=1,pch=col,col=col,cex=2)
+      points(npairs_list[idx], score[idx], lwd=2,lty=1,pch=col,col=col,cex=3)
     }
   }
   
   for(col in seq(nStatic)){
     modelname <- modelsStatic[col]
     ref <- res_static[[modelname]]
-    points(npairs_list, rep(ref,length(npairs_list)), type='b',lty=5,lwd=1,pch=col,col=col,cex=0.5)
+    points(npairs_list, rep(ref,length(npairs_list)), type='b',lty=5,lwd=1,pch=col,col=col,cex=1)
   }
   
   molist <- c(modelsVary,modelsStatic)
-  legend("bottomleft", legend=molist,
+  legend("bottomleft", legend=molist,pch=c(rep(NA,nVary),seq(nStatic)),
          col=c(seq(nVary),seq(nStatic)),lty=c(rep(1,nVary),rep(5,nStatic)),
          lwd=c(rep(2,nVary),rep(1,nStatic)),cex=1.25)
   grid(ny=16)

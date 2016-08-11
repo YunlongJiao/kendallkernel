@@ -497,7 +497,7 @@ ggplot(ptmkmeans, aes(x = nclust, y = time, colour = method)) +
         legend.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.title = element_text(size = 36, colour = "black", face = "bold"), 
-        plot.margin = unit(c(0.5, 0.5, 0.1, 0.1), "lines"), 
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), 
         panel.border = element_rect(colour = "black", size = 1))
 
 # kmeans silhouette
@@ -510,21 +510,23 @@ ggplot(data = subset(clstats_best, nclust %in% klist_red), aes(x = nclust, y = s
         legend.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.title = element_text(size = 36, colour = "black", face = "bold"), 
-        plot.margin = unit(c(0.5, 0.5, 0.1, 0.1), "lines"), 
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), 
         panel.border = element_rect(colour = "black", size = 1))
 
 # mallows silhouette
-ggplot(data = subset(mallowsstats_best, nclust %in% klist_red & method %in% keylistML_red), 
-       aes(x = nclust, y = silhouette, colour = method)) + 
+d <- subset(mallowsstats_best, nclust %in% klist_red & method %in% keylistML_red)
+stopifnot(!("kernelMallows" %in% d$method) && ("kernelMallows" %in% levels(d$method)))
+d$method[d$method == "kernelMallows_Exh"] <- "kernelMallows"
+ggplot(data = d, aes(x = nclust, y = silhouette, colour = method)) + 
   geom_line(aes(group = method), size = 1.5) + 
   geom_point(aes(shape = method), size = 5) + 
   theme_bw() + 
-  theme(legend.justification = c(0,0), legend.position = c(1,0.8), legend.title = element_blank(), 
+  theme(legend.justification = c(1,0.85), legend.position = c(1,0.85), legend.title = element_blank(), 
         legend.key.size = unit(0.6, "in"), legend.background = element_rect(alpha("white", 0)),
         legend.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.title = element_text(size = 36, colour = "black", face = "bold"), 
-        plot.margin = unit(c(0.5, 0.5, 0.1, 0.1), "lines"), 
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), 
         panel.border = element_rect(colour = "black", size = 1))
 ```
 

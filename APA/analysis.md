@@ -96,7 +96,7 @@ for (key in keylistKM) {
 ## ========================= bruteKmeans =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.731   0.057   1.588 
+##   0.758   0.036   0.794 
 ## kcca object of family 'bruteKmeans' 
 ## 
 ## call:
@@ -105,19 +105,19 @@ for (key in keylistKM) {
 ## 
 ## cluster info:
 ##   size  av_dist max_dist separation
-## 1   25 2.280000        4          3
-## 2   30 2.466667        4          3
-## 3   23 2.217391        4          2
-## 4   21 2.285714        4          3
-## 5   21 2.047619        3          3
+## 1   23 2.130435        3          3
+## 2   25 2.240000        4          3
+## 3   26 2.461538        4          3
+## 4   23 2.173913        4          3
+## 5   23 2.217391        4          2
 ## 
-## convergence after 5 iterations
-## sum of within cluster distances: 273 
-## weighted sum of distance to corresp center 11890
+## convergence after 8 iterations
+## sum of within cluster distances: 270 
+## weighted sum of distance to corresp center 11348
 ## ========================= copelandKmeans =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.197   0.000   0.304 
+##   0.102   0.000   0.101 
 ## kcca object of family 'copelandKmeans' 
 ## 
 ## call:
@@ -126,19 +126,19 @@ for (key in keylistKM) {
 ## 
 ## cluster info:
 ##   size  av_dist max_dist separation
-## 1   24 2.208333        4          3
-## 2   27 2.333333        4          3
-## 3   28 2.392857        4          3
-## 4   24 2.166667        3          3
-## 5   17 1.823529        3          3
+## 1   26 2.346154        4          3
+## 2   21 2.190476        4          2
+## 3   25 2.280000        4          3
+## 4   23 2.260870        4          2
+## 5   25 2.320000        4          3
 ## 
-## convergence after 6 iterations
-## sum of within cluster distances: 266 
-## weighted sum of distance to corresp center 11707
+## convergence after 3 iterations
+## sum of within cluster distances: 274 
+## weighted sum of distance to corresp center 12363
 ## ========================= bordaKmeans =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.154   0.004   0.236 
+##   0.138   0.000   0.138 
 ## kcca object of family 'bordaKmeans' 
 ## 
 ## call:
@@ -147,19 +147,19 @@ for (key in keylistKM) {
 ## 
 ## cluster info:
 ##   size  av_dist max_dist separation
-## 1   26 2.307692        4          3
-## 2   28 2.357143        4          3
-## 3   22 2.363636        4          2
-## 4   16 2.125000        4          1
-## 5   28 2.428571        4          3
+## 1   23 2.130435        3          3
+## 2   27 2.407407        4          3
+## 3   21 2.142857        4          2
+## 4   23 2.304348        4          3
+## 5   26 2.307692        4          3
 ## 
-## convergence after 3 iterations
-## sum of within cluster distances: 280 
-## weighted sum of distance to corresp center 13124
+## convergence after 8 iterations
+## sum of within cluster distances: 272 
+## weighted sum of distance to corresp center 12274
 ## ========================= kernelKmeans =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.129   0.000   0.229 
+##   0.083   0.000   0.084 
 ## kcca object of family 'kernelKmeans' 
 ## 
 ## call:
@@ -168,15 +168,15 @@ for (key in keylistKM) {
 ## 
 ## cluster info:
 ##   size  av_dist max_dist separation
-## 1   24 1.499384 2.206206   2.188896
-## 2   20 1.401629 2.149123   1.864625
-## 3   28 1.656908 2.661332   2.188532
-## 4   21 1.467576 2.463216   2.017858
-## 5   27 1.629571 2.700762   2.211176
+## 1   25 1.555759 2.925321   2.125931
+## 2   18 1.341529 2.221791   2.027778
+## 3   28 1.640970 2.589069   2.024327
+## 4   24 1.519737 2.389033   1.843796
+## 5   25 1.531425 2.450160   1.792294
 ## 
 ## convergence after 8 iterations
-## sum of within cluster distances: 185.2287 
-## weighted sum of distance to corresp center 8451.318
+## sum of within cluster distances: 183.748 
+## weighted sum of distance to corresp center 7968.362
 ```
 
 ```r
@@ -239,112 +239,112 @@ for (key in keylistML) {
 ## ========================= bruteMallows =========================
 ## runtime = 
 ##    user  system elapsed 
-##   1.553   0.060   3.157 
+##   3.046   0.029   3.077 
 ## lambda estimate = 
-## [1] 0.101 0.556 0.157 0.038 1.246
+## [1] 0.168 0.584 0.649 0.188 0.584
 ## cluster size (without weights) = 
 ## 
-##  1  2  3  5 
-## 87 10 18  5 
+##  1  2  3  4  5 
+## 29  6 15 41 29 
 ## 
 ## ========================= copelandMallows =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.867   0.007   2.674 
+##   1.968   0.005   1.975 
 ## lambda estimate = 
-## [1] 0.051 0.130 1.803 0.238 1.472
+## [1] 0.168 0.584 0.649 0.188 0.584
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 13 91  1 10  5 
+## 29  6 15 41 29 
 ## 
 ## ========================= bordaMallows =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.899   0.005   2.704 
+##   2.045   0.002   2.047 
 ## lambda estimate = 
-## [1] 0.099 0.327 0.282 0.601 0.367
+## [1] 0.127 0.529 0.668 0.162 0.720
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 16 58  1 24 21 
+## 44  6 14 38 18 
 ## 
 ## ========================= kernelMallows =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.772   0.008   2.381 
+##   1.564   0.013   1.579 
 ## lambda estimate = 
-## [1] 1.255 1.161 1.145 2.264 2.786
+## [1] 1.694 1.647 1.189 1.153 1.981
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 36 28 46  7  3 
+## 14 13 43 41  9 
 ## 
 ## ========================= kernelMallows_Exh =========================
 ## runtime = 
 ##    user  system elapsed 
-##  10.380   0.372  31.779 
+##  18.102   0.107  18.222 
 ## lambda estimate = 
-## [1] 0.345 1.212 1.208 1.368 0.954
+## [1] 1.177 1.170 0.852 1.269 0.986
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 65 22 10  7 16 
+## 18 10 33 54  5 
 ## 
 ## ========================= bruteMallows_Eqlam =========================
 ## runtime = 
 ##    user  system elapsed 
-##   1.167   0.049   3.688 
+##   1.176   0.007   1.186 
 ## lambda estimate = 
-## [1] 0.334 0.334 0.334 0.334 0.334
+## [1] 0.447 0.447 0.447 0.447 0.447
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 11 49 15  2 43 
+##  2 11 44 12 51 
 ## 
 ## ========================= copelandMallows_Eqlam =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.155   0.001   0.556 
+##   0.613   0.003   0.616 
 ## lambda estimate = 
-## [1] 0.455 0.455 0.455 0.455 0.455
+## [1] 0.447 0.447 0.447 0.447 0.447
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 18  5 44 20 33 
+##  2 11 44 12 51 
 ## 
 ## ========================= bordaMallows_Eqlam =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.581   0.007   1.788 
+##   0.802   0.000   0.802 
 ## lambda estimate = 
-## [1] 0.23 0.23 0.23 0.23 0.23
+## [1] 0.44 0.44 0.44 0.44 0.44
 ## cluster size (without weights) = 
 ## 
-##  1  2  4  5 
-## 18 48  7 47 
+##  1  2  3  4  5 
+##  2 27 38 12 41 
 ## 
 ## ========================= kernelMallows_Eqlam =========================
 ## runtime = 
 ##    user  system elapsed 
-##   0.856   0.010   2.466 
+##   0.669   0.005   0.677 
 ## lambda estimate = 
-## [1] 1.3 1.3 1.3 1.3 1.3
+## [1] 1.329 1.329 1.329 1.329 1.329
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 22 10 34 23 31 
+## 28 17 31 27 17 
 ## 
 ## ========================= kernelMallows_Exh_Eqlam =========================
 ## runtime = 
 ##    user  system elapsed 
-##  12.028   0.436  56.998 
+##  17.766   0.096  17.862 
 ## lambda estimate = 
-## [1] 1.123 1.123 1.123 1.123 1.123
+## [1] 0.961 0.961 0.961 0.961 0.961
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 40  5 28 35 12
+## 18 10 33 54  5
 ```
 
 ```r
@@ -356,7 +356,7 @@ ggplot(likes, aes(x = iter, y = loglike)) +
   geom_line(aes(group = method, colour = method))
 ```
 
-![plot of chunk mallows](figure/mallows-1.pdf) 
+![plot of chunk mallows](figure/mallows-1.pdf)
 
 ```r
 # vary nclust and get clustering
@@ -406,24 +406,24 @@ for (key in keylistGS) {
 ## ========================= kernelGaussian =========================
 ## runtime = 
 ##    user  system elapsed 
-##   1.166   0.019   1.186 
+##   1.188   0.020   1.215 
 ## lambda estimate = 
-## [1] 3.680 2.981 3.362 3.861 4.285
+## [1] 4.194 4.499 4.445 2.784 3.048
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 24 36 25 18 17 
+## 17 16 16 41 30 
 ## 
 ## ========================= kernelGaussian_Eqlam =========================
 ## runtime = 
 ##    user  system elapsed 
-##   1.517   0.000   1.518 
+##   1.108   0.001   1.114 
 ## lambda estimate = 
-## [1] 3.595 3.595 3.595 3.595 3.595
+## [1] 3.649 3.649 3.649 3.649 3.649
 ## cluster size (without weights) = 
 ## 
 ##  1  2  3  4  5 
-## 25 28 20 20 27
+## 25 18 25 25 27
 ```
 
 ```r
@@ -435,7 +435,7 @@ ggplot(likes, aes(x = iter, y = loglike)) +
   geom_line(aes(group = method, colour = method))
 ```
 
-![plot of chunk gaussian](figure/gaussian-1.pdf) 
+![plot of chunk gaussian](figure/gaussian-1.pdf)
 
 ```r
 # vary nclust and get clustering
@@ -485,7 +485,7 @@ ggplot(clstats, aes(x = nclust, y = distsum)) +
     stat_summary(fun.y = min, geom = "point", aes(colour = method, shape = method), size = 3)
 ```
 
-![plot of chunk kmeans_plot](figure/kmeans_plot-1.pdf) 
+![plot of chunk kmeans_plot](figure/kmeans_plot-1.pdf)
 
 ```r
 # distintra (lower is better)
@@ -495,7 +495,7 @@ ggplot() +
     geom_point(data = clstats_best, aes(x = nclust, y = distintra, colour = method, shape = method), size = 3)
 ```
 
-![plot of chunk kmeans_plot](figure/kmeans_plot-2.pdf) 
+![plot of chunk kmeans_plot](figure/kmeans_plot-2.pdf)
 
 ```r
 # distinter (higher is better)
@@ -505,7 +505,7 @@ ggplot() +
     geom_point(data = clstats_best, aes(x = nclust, y = distinter, colour = method, shape = method), size = 3)
 ```
 
-![plot of chunk kmeans_plot](figure/kmeans_plot-3.pdf) 
+![plot of chunk kmeans_plot](figure/kmeans_plot-3.pdf)
 
 ```r
 # dunn (higher is better)
@@ -515,7 +515,7 @@ ggplot() +
     geom_point(data = clstats_best, aes(x = nclust, y = dunn, colour = method, shape = method), size = 3)
 ```
 
-![plot of chunk kmeans_plot](figure/kmeans_plot-4.pdf) 
+![plot of chunk kmeans_plot](figure/kmeans_plot-4.pdf)
 
 ```r
 # silhouette (higher is better)
@@ -525,7 +525,7 @@ ggplot() +
     geom_point(data = clstats_best, aes(x = nclust, y = silhouette, colour = method, shape = method), size = 3)
 ```
 
-![plot of chunk kmeans_plot](figure/kmeans_plot-5.pdf) 
+![plot of chunk kmeans_plot](figure/kmeans_plot-5.pdf)
 
 Define for **mallows mixture models**
 
@@ -552,7 +552,7 @@ for (key in keylistGS) {
 }
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-1.pdf) ![plot of chunk mallows_plot](figure/mallows_plot-2.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-1.pdf)![plot of chunk mallows_plot](figure/mallows_plot-2.pdf)
 
 ```r
 # get best repeat with max likelihood
@@ -575,7 +575,7 @@ ggplot() +
     geom_line(data = mallowsstats_best, aes(x = nclust, y = loglike, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-3.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-3.pdf)
 
 ```r
 # bic (higher is better)
@@ -584,7 +584,7 @@ ggplot() +
     geom_line(data = mallowsstats_best, aes(x = nclust, y = bic, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-4.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-4.pdf)
 
 ```r
 # icl (higher is better)
@@ -593,7 +593,7 @@ ggplot() +
     geom_line(data = mallowsstats_best, aes(x = nclust, y = icl, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-5.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-5.pdf)
 
 ```r
 # loglike (higher is better; without kernelGaussian)
@@ -602,7 +602,7 @@ ggplot() +
     geom_line(data = subset(mallowsstats_best, !method %in% keylistGS), aes(x = nclust, y = loglike, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-6.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-6.pdf)
 
 ```r
 # bic (higher is better; without kernelGaussian)
@@ -611,7 +611,7 @@ ggplot() +
     geom_line(data = subset(mallowsstats_best, !method %in% keylistGS), aes(x = nclust, y = bic, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-7.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-7.pdf)
 
 ```r
 # icl (higher is better; without kernelGaussian)
@@ -620,7 +620,7 @@ ggplot() +
     geom_line(data = subset(mallowsstats_best, !method %in% keylistGS), aes(x = nclust, y = icl, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-8.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-8.pdf)
 
 ```r
 # distintra (lower is better)
@@ -629,7 +629,7 @@ ggplot() +
     geom_line(data = mallowsstats_best, aes(x = nclust, y = distintra, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-9.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-9.pdf)
 
 ```r
 # distinter (higher is better)
@@ -638,7 +638,7 @@ ggplot() +
     geom_line(data = mallowsstats_best, aes(x = nclust, y = distinter, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-10.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-10.pdf)
 
 ```r
 # dunn (higher is better)
@@ -647,7 +647,7 @@ ggplot() +
     geom_line(data = mallowsstats_best, aes(x = nclust, y = dunn, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-11.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-11.pdf)
 
 ```r
 # silhouette (higher is better)
@@ -656,7 +656,7 @@ ggplot() +
     geom_line(data = mallowsstats_best, aes(x = nclust, y = silhouette, group = method, colour = method))
 ```
 
-![plot of chunk mallows_plot](figure/mallows_plot-12.pdf) 
+![plot of chunk mallows_plot](figure/mallows_plot-12.pdf)
 
 Finally, graphical illustration of clustering results (nclust selected by max of average silhouette width) with heatmaps.
 
@@ -677,7 +677,7 @@ for (key in keylistKM){
 }
 ```
 
-![plot of chunk heatmap](figure/heatmap-1.pdf) ![plot of chunk heatmap](figure/heatmap-2.pdf) ![plot of chunk heatmap](figure/heatmap-3.pdf) ![plot of chunk heatmap](figure/heatmap-4.pdf) 
+![plot of chunk heatmap](figure/heatmap-1.pdf)![plot of chunk heatmap](figure/heatmap-2.pdf)![plot of chunk heatmap](figure/heatmap-3.pdf)![plot of chunk heatmap](figure/heatmap-4.pdf)
 
 ```r
 # for mallows mixture models, optimal number of clusters is selected wrt BIC
@@ -695,7 +695,7 @@ for (key in keylistML) {
 }
 ```
 
-![plot of chunk heatmap](figure/heatmap-5.pdf) ![plot of chunk heatmap](figure/heatmap-6.pdf) ![plot of chunk heatmap](figure/heatmap-7.pdf) ![plot of chunk heatmap](figure/heatmap-8.pdf) ![plot of chunk heatmap](figure/heatmap-9.pdf) ![plot of chunk heatmap](figure/heatmap-10.pdf) ![plot of chunk heatmap](figure/heatmap-11.pdf) ![plot of chunk heatmap](figure/heatmap-12.pdf) ![plot of chunk heatmap](figure/heatmap-13.pdf) ![plot of chunk heatmap](figure/heatmap-14.pdf) ![plot of chunk heatmap](figure/heatmap-15.pdf) ![plot of chunk heatmap](figure/heatmap-16.pdf) 
+![plot of chunk heatmap](figure/heatmap-5.pdf)![plot of chunk heatmap](figure/heatmap-6.pdf)![plot of chunk heatmap](figure/heatmap-7.pdf)![plot of chunk heatmap](figure/heatmap-8.pdf)![plot of chunk heatmap](figure/heatmap-9.pdf)![plot of chunk heatmap](figure/heatmap-10.pdf)![plot of chunk heatmap](figure/heatmap-11.pdf)![plot of chunk heatmap](figure/heatmap-12.pdf)![plot of chunk heatmap](figure/heatmap-13.pdf)![plot of chunk heatmap](figure/heatmap-14.pdf)![plot of chunk heatmap](figure/heatmap-15.pdf)![plot of chunk heatmap](figure/heatmap-16.pdf)
 
 ## More for kmeans...
 
@@ -723,19 +723,19 @@ for (key in keylistKM) {
 ## 
 ## ========================= bruteKmeans =========================
 ##     user   system  elapsed 
-## 1627.953   14.571 3734.806 
+## 1697.756    8.464 1706.196 
 ## 
 ## ========================= copelandKmeans =========================
 ##    user  system elapsed 
-## 203.217   0.366 501.573 
+## 248.863   0.425 249.188 
 ## 
 ## ========================= bordaKmeans =========================
 ##    user  system elapsed 
-## 178.884   0.224 481.913 
+## 209.330   0.227 209.440 
 ## 
 ## ========================= kernelKmeans =========================
 ##    user  system elapsed 
-## 106.964   0.393 284.348
+## 133.326   0.363 133.615
 ```
 
 Compare kmeans methods with respect to stability index. Define for **kmeans models**
@@ -760,7 +760,7 @@ ggplot(bclstats, aes(x = nclust, y = rand, fill = method)) +
     geom_boxplot(alpha = 0.5)
 ```
 
-![plot of chunk stability_plot](figure/stability_plot-1.pdf) 
+![plot of chunk stability_plot](figure/stability_plot-1.pdf)
 
 ## More for mallows...
 
@@ -807,7 +807,7 @@ ggplot(mallowsstatsCV, aes(x = nclust, y = cv.loglik)) +
     stat_summary(fun.y = mean, geom = "line", aes(group = method, colour = method))
 ```
 
-![plot of chunk mallowscv_plot](figure/mallowscv_plot-1.pdf) 
+![plot of chunk mallowscv_plot](figure/mallowscv_plot-1.pdf)
 
 ```r
 # cv.loglik (perplexity; higher is better; without kernelGaussian)
@@ -816,7 +816,7 @@ ggplot(subset(mallowsstatsCV, !method %in% keylistGS), aes(x = nclust, y = cv.lo
     stat_summary(fun.y = mean, geom = "line", aes(group = method, colour = method))
 ```
 
-![plot of chunk mallowscv_plot](figure/mallowscv_plot-2.pdf) 
+![plot of chunk mallowscv_plot](figure/mallowscv_plot-2.pdf)
 
 ## Reproduce figures from paper in section clusterAPA
 
@@ -838,58 +838,64 @@ for (key in keylistKM) {
     ptm <- sapply(1:nrepeats, function(i)
       system.time(cl <- kcca_modified(x = dat, k = k, family = family, weights = freq, save.data = FALSE))[1]
     )
-    ptmkmeans[[num]] <- data.frame(nclust = k, method = key, ptm = mean(ptm))
+    ptmkmeans[[num]] <- data.frame(nclust = k, method = key, time = mean(ptm))
     num <- num + 1
   }
 }
 ptmkmeans <- do.call("rbind", ptmkmeans)
 ptmkmeans$nclust <- ordered(ptmkmeans$nclust)
-ggplot(ptmkmeans, aes(x = nclust, y = ptm, colour = method)) + 
+ptmkmeans$method <- ordered(ptmkmeans$method)
+ggplot(ptmkmeans, aes(x = nclust, y = time, colour = method)) + 
   geom_line(aes(group = method), size = 1.5) + 
-  geom_point(aes(shape = method), size = 3) + 
+  geom_point(aes(shape = method), size = 5) + 
   theme_bw() + 
   theme(legend.justification = c(0,1), legend.position = c(0,1), legend.title = element_blank(), 
         legend.key.size = unit(0.6, "in"), legend.background = element_rect(alpha("white", 0)),
         legend.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.title = element_text(size = 36, colour = "black", face = "bold"), 
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), 
         panel.border = element_rect(colour = "black", size = 1))
 ```
 
-![plot of chunk paper_plot](figure/paper_plot-1.pdf) 
+![plot of chunk paper_plot](figure/paper_plot-1.pdf)
 
 ```r
 # kmeans silhouette
 ggplot(data = subset(clstats_best, nclust %in% klist_red), aes(x = nclust, y = silhouette, colour = method)) + 
   geom_line(aes(group = method), size = 1.5) + 
-  geom_point(aes(shape = method), size = 3) + 
+  geom_point(aes(shape = method), size = 5) + 
   theme_bw() + 
   theme(legend.justification = c(0,1), legend.position = c(0,1), legend.title = element_blank(), 
         legend.key.size = unit(0.6, "in"), legend.background = element_rect(alpha("white", 0)),
         legend.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.title = element_text(size = 36, colour = "black", face = "bold"), 
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), 
         panel.border = element_rect(colour = "black", size = 1))
 ```
 
-![plot of chunk paper_plot](figure/paper_plot-2.pdf) 
+![plot of chunk paper_plot](figure/paper_plot-2.pdf)
 
 ```r
 # mallows silhouette
-ggplot(data = subset(mallowsstats_best, nclust %in% klist_red & method %in% keylistML_red), 
-       aes(x = nclust, y = silhouette, colour = method)) + 
+d <- subset(mallowsstats_best, nclust %in% klist_red & method %in% keylistML_red)
+stopifnot(!("kernelMallows" %in% d$method) && ("kernelMallows" %in% levels(d$method)))
+d$method[d$method == "kernelMallows_Exh"] <- "kernelMallows"
+ggplot(data = d, aes(x = nclust, y = silhouette, colour = method)) + 
   geom_line(aes(group = method), size = 1.5) + 
-  geom_point(aes(shape = method), size = 3) + 
+  geom_point(aes(shape = method), size = 5) + 
   theme_bw() + 
-  theme(legend.justification = c(0,0), legend.position = c(0,0), legend.title = element_blank(), 
+  theme(legend.justification = c(1,0.85), legend.position = c(1,0.85), legend.title = element_blank(), 
         legend.key.size = unit(0.6, "in"), legend.background = element_rect(alpha("white", 0)),
         legend.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.text = element_text(size = 36, colour = "black", face = "bold"), 
         axis.title = element_text(size = 36, colour = "black", face = "bold"), 
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), 
         panel.border = element_rect(colour = "black", size = 1))
 ```
 
-![plot of chunk paper_plot](figure/paper_plot-3.pdf) 
+![plot of chunk paper_plot](figure/paper_plot-3.pdf)
 
 ## session info
 
@@ -904,13 +910,13 @@ devtools::session_info()
 
 ```
 ##  setting  value                       
-##  version  R version 3.2.2 (2015-08-14)
-##  system   x86_64, darwin13.4.0        
-##  ui       RStudio (0.99.473)          
+##  version  R version 3.2.3 (2015-12-10)
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
-##  tz       Europe/Paris                
-##  date     2016-02-22
+##  tz       <NA>                        
+##  date     2016-08-11
 ```
 
 ```
@@ -918,61 +924,53 @@ devtools::session_info()
 ```
 
 ```
-##  package      * version date       source                               
-##  bitops         1.0-6   2013-08-17 CRAN (R 3.1.0)                       
-##  car            2.1-1   2015-12-14 CRAN (R 3.2.3)                       
-##  caret        * 6.0-62  2015-11-23 CRAN (R 3.2.2)                       
-##  caTools        1.17.1  2014-09-10 CRAN (R 3.1.2)                       
-##  codetools      0.2-14  2015-07-15 CRAN (R 3.2.2)                       
-##  colorspace     1.2-6   2015-03-11 CRAN (R 3.2.0)                       
-##  combinat     * 0.0-8   2012-10-29 CRAN (R 3.2.0)                       
-##  devtools       1.9.1   2015-09-11 CRAN (R 3.2.0)                       
-##  digest         0.6.8   2014-12-31 CRAN (R 3.1.2)                       
-##  evaluate       0.8     2015-09-18 CRAN (R 3.2.0)                       
-##  flexclust    * 1.3-4   2013-07-02 CRAN (R 3.2.0)                       
-##  foreach        1.4.3   2015-10-13 CRAN (R 3.2.0)                       
-##  formatR        1.2.1   2015-09-18 CRAN (R 3.2.0)                       
-##  gdata          2.17.0  2015-07-04 CRAN (R 3.2.0)                       
-##  ggplot2      * 2.0.0   2015-12-18 CRAN (R 3.2.3)                       
-##  gplots       * 2.17.0  2015-05-02 CRAN (R 3.2.0)                       
-##  gtable         0.1.2   2012-12-05 CRAN (R 3.1.0)                       
-##  gtools         3.5.0   2015-05-29 CRAN (R 3.2.0)                       
-##  htmltools      0.2.6   2014-09-08 CRAN (R 3.2.0)                       
-##  iterators      1.0.8   2015-10-13 CRAN (R 3.2.0)                       
-##  kernrank     * 0.0     2016-02-22 Github (YunlongJiao/kernrank@2f328da)
-##  KernSmooth     2.23-15 2015-06-29 CRAN (R 3.2.2)                       
-##  knitr          1.11    2015-08-14 CRAN (R 3.2.1)                       
-##  labeling       0.3     2014-08-23 CRAN (R 3.1.2)                       
-##  lattice      * 0.20-33 2015-07-14 CRAN (R 3.2.2)                       
-##  lme4           1.1-10  2015-10-06 CRAN (R 3.2.2)                       
-##  magrittr       1.5     2014-11-22 CRAN (R 3.2.0)                       
-##  MASS           7.3-43  2015-07-16 CRAN (R 3.2.2)                       
-##  Matrix         1.2-2   2015-07-08 CRAN (R 3.2.2)                       
-##  MatrixModels   0.4-1   2015-08-22 CRAN (R 3.2.0)                       
-##  memoise        0.2.1   2014-04-22 CRAN (R 3.1.0)                       
-##  mgcv           1.8-7   2015-07-23 CRAN (R 3.2.2)                       
-##  minqa          1.2.4   2014-10-09 CRAN (R 3.1.2)                       
-##  modeltools   * 0.2-21  2013-09-02 CRAN (R 3.1.0)                       
-##  munsell        0.4.2   2013-07-11 CRAN (R 3.1.0)                       
-##  mvtnorm      * 1.0-3   2015-07-22 CRAN (R 3.2.0)                       
-##  nlme           3.1-121 2015-06-29 CRAN (R 3.2.2)                       
-##  nloptr         1.0.4   2014-08-04 CRAN (R 3.1.2)                       
-##  nnet           7.3-10  2015-06-29 CRAN (R 3.2.2)                       
-##  pbkrtest       0.4-4   2015-12-12 CRAN (R 3.2.3)                       
-##  pcaPP          1.9-60  2014-10-22 CRAN (R 3.1.2)                       
-##  plyr           1.8.3   2015-06-12 CRAN (R 3.2.0)                       
-##  quantreg       5.19    2015-08-31 CRAN (R 3.2.0)                       
-##  Rankcluster  * 0.92.9  2014-07-25 CRAN (R 3.1.2)                       
-##  Rcpp           0.12.2  2015-11-15 CRAN (R 3.2.2)                       
-##  reshape2     * 1.4.1   2014-12-06 CRAN (R 3.1.2)                       
-##  rmarkdown      0.8     2015-08-30 CRAN (R 3.2.1)                       
-##  scales         0.3.0   2015-08-25 CRAN (R 3.2.0)                       
-##  SparseM        1.7     2015-08-15 CRAN (R 3.2.0)                       
-##  stringi        1.0-1   2015-10-22 CRAN (R 3.2.0)                       
-##  stringr        1.0.0   2015-04-30 CRAN (R 3.2.0)                       
-##  yaml           2.1.13  2014-06-12 CRAN (R 3.2.0)
+##  package      * version date       source        
+##  bitops         1.0-6   2013-08-17 CRAN (R 3.2.2)
+##  car            2.1-0   2015-09-03 CRAN (R 3.2.2)
+##  caret        * 6.0-62  2015-11-23 CRAN (R 3.2.2)
+##  caTools        1.17.1  2014-09-10 CRAN (R 3.2.2)
+##  codetools      0.2-14  2015-07-15 CRAN (R 3.2.2)
+##  colorspace     1.2-6   2015-03-11 CRAN (R 3.2.2)
+##  combinat       0.0-8   2012-10-29 CRAN (R 3.2.2)
+##  devtools       1.9.1   2015-09-11 CRAN (R 3.2.2)
+##  digest         0.6.8   2014-12-31 CRAN (R 3.2.2)
+##  evaluate       0.8     2015-09-18 CRAN (R 3.2.2)
+##  flexclust    * 1.3-4   2013-07-02 CRAN (R 3.2.2)
+##  foreach        1.4.3   2015-10-13 CRAN (R 3.2.2)
+##  formatR        1.2.1   2015-09-18 CRAN (R 3.2.2)
+##  gdata          2.17.0  2015-07-04 CRAN (R 3.2.2)
+##  ggplot2      * 2.1.0   2016-03-01 CRAN (R 3.2.3)
+##  gplots       * 2.17.0  2015-05-02 CRAN (R 3.2.2)
+##  gtable         0.1.2   2012-12-05 CRAN (R 3.2.2)
+##  gtools         3.5.0   2015-05-29 CRAN (R 3.2.2)
+##  iterators      1.0.8   2015-10-13 CRAN (R 3.2.2)
+##  kernrank     * 1.0.2   2016-04-28 local         
+##  KernSmooth     2.23-15 2015-06-29 CRAN (R 3.2.2)
+##  knitr          1.12.3  2016-01-22 CRAN (R 3.2.3)
+##  labeling       0.3     2014-08-23 CRAN (R 3.2.2)
+##  lattice      * 0.20-33 2015-07-14 CRAN (R 3.2.2)
+##  lme4           1.1-10  2015-10-06 CRAN (R 3.2.2)
+##  magrittr       1.5     2014-11-22 CRAN (R 3.2.2)
+##  MASS           7.3-43  2015-07-16 CRAN (R 3.2.2)
+##  Matrix         1.2-2   2015-07-08 CRAN (R 3.2.2)
+##  MatrixModels   0.4-1   2015-08-22 CRAN (R 3.2.2)
+##  memoise        0.2.1   2014-04-22 CRAN (R 3.2.2)
+##  mgcv           1.8-7   2015-07-23 CRAN (R 3.2.2)
+##  minqa          1.2.4   2014-10-09 CRAN (R 3.2.2)
+##  modeltools   * 0.2-21  2013-09-02 CRAN (R 3.2.2)
+##  munsell        0.4.2   2013-07-11 CRAN (R 3.2.2)
+##  mvtnorm      * 1.0-3   2015-07-22 CRAN (R 3.2.2)
+##  nlme           3.1-121 2015-06-29 CRAN (R 3.2.2)
+##  nloptr         1.0.4   2014-08-04 CRAN (R 3.2.2)
+##  nnet           7.3-10  2015-06-29 CRAN (R 3.2.2)
+##  pbkrtest       0.4-2   2014-11-13 CRAN (R 3.2.2)
+##  plyr           1.8.3   2015-06-12 CRAN (R 3.2.2)
+##  quantreg       5.19    2015-08-31 CRAN (R 3.2.2)
+##  Rankcluster  * 0.92.9  2014-07-25 CRAN (R 3.2.2)
+##  Rcpp           0.12.2  2015-11-15 CRAN (R 3.2.2)
+##  reshape2     * 1.4.1   2014-12-06 CRAN (R 3.2.2)
+##  scales         0.3.0   2015-08-25 CRAN (R 3.2.2)
+##  SparseM        1.7     2015-08-15 CRAN (R 3.2.2)
+##  stringi        1.0-1   2015-10-22 CRAN (R 3.2.2)
+##  stringr        1.0.0   2015-04-30 CRAN (R 3.2.2)
 ```
-
-
-
-
