@@ -897,6 +897,24 @@ ggplot(data = d, aes(x = nclust, y = silhouette, colour = method)) +
 
 ![plot of chunk paper_plot](figure/paper_plot-3.pdf)
 
+## Reproduce figures from supp
+
+
+```r
+ggplot(bclstats, aes(x = nclust, y = rand, fill = method)) + 
+    geom_boxplot() + ylim(0, 0.75) + 
+    theme_bw() + 
+    theme(legend.justification = c(1,0), legend.position = c(1,0), legend.title = element_blank(), 
+          legend.key.size = unit(0.6, "in"), legend.background = element_rect(alpha("white", 0)),
+          legend.text = element_text(size = 36, colour = "black", face = "bold"), 
+          axis.text = element_text(size = 36, colour = "black", face = "bold"), 
+          axis.title = element_text(size = 36, colour = "black", face = "bold"), 
+          plot.margin = unit(c(1, 1, 1, 1), "lines"), 
+          panel.border = element_rect(colour = "black", size = 1))
+```
+
+![plot of chunk supp_plot](figure/supp_plot-1.pdf)
+
 ## session info
 
 
@@ -916,7 +934,7 @@ devtools::session_info()
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
 ##  tz       <NA>                        
-##  date     2016-08-11
+##  date     2016-09-11
 ```
 
 ```

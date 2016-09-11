@@ -530,6 +530,21 @@ ggplot(data = d, aes(x = nclust, y = silhouette, colour = method)) +
         panel.border = element_rect(colour = "black", size = 1))
 ```
 
+## Reproduce figures from supp
+
+```{r supp_plot, cache = TRUE}
+ggplot(bclstats, aes(x = nclust, y = rand, fill = method)) + 
+    geom_boxplot() + ylim(0, 0.75) + 
+    theme_bw() + 
+    theme(legend.justification = c(1,0), legend.position = c(1,0), legend.title = element_blank(), 
+          legend.key.size = unit(0.6, "in"), legend.background = element_rect(alpha("white", 0)),
+          legend.text = element_text(size = 36, colour = "black", face = "bold"), 
+          axis.text = element_text(size = 36, colour = "black", face = "bold"), 
+          axis.title = element_text(size = 36, colour = "black", face = "bold"), 
+          plot.margin = unit(c(1, 1, 1, 1), "lines"), 
+          panel.border = element_rect(colour = "black", size = 1))
+```
+
 ## session info
 
 ```{r session_info}
