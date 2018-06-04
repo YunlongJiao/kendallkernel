@@ -1,8 +1,8 @@
-# kendallkernel_demo
+# kendallkernel
 
-This repo contains `R` codes for reproducing results and more experiments from
+This repo contains `R` code for reproducing results and more experiments from
 
-> Yunlong Jiao, Jean-Philippe Vert. The Kendall and Mallows Kernels for Permutations. 2016. [hal-01279273](https://hal.archives-ouvertes.fr/hal-01279273) 
+> Yunlong Jiao, Jean-Philippe Vert. "The Kendall and Mallows Kernels for Permutations." _IEEE_ Transactions on Pattern Analysis and Machine Intelligence(TPAMI), 2017. [DOI: 10.1109/TPAMI.2017.2719680](https://doi.org/10.1109/TPAMI.2017.2719680)
 
 # Cluster full rankings (APA)
 
